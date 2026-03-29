@@ -6,6 +6,7 @@ const helmet = require("helmet");
 const morgan = require("morgan");
 
 const authRoutes = require("./routes/auth.routes");
+const productRoutes = require("./routes/product.routes");
 const app = express();
 
 // Security & logging middleware
@@ -25,6 +26,7 @@ app.use(
 );
 
 app.use("/api/auth", authRoutes);
+app.use("/api/products", productRoutes);
 
 // Health check route
 app.get("/api/health", (req, res) => {

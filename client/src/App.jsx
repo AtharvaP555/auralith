@@ -1,7 +1,10 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import useAuthStore from "./store/authStore";
+import Layout from "./components/layout/Layout";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import Products from "./pages/Products";
+import ProductDetail from "./pages/ProductDetail";
 
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated } = useAuthStore();
@@ -36,9 +39,33 @@ const App = () => {
         path="/"
         element={
           <ProtectedRoute>
-            <div className="min-h-screen flex items-center justify-center">
-              <h1 className="text-3xl font-bold">Welcome to Auralith</h1>
-            </div>
+            <Layout>
+              <div className="flex items-center justify-center min-h-96">
+                <h1 className="text-3xl font-bold text-gray-900">
+                  Welcome to Auralith
+                </h1>
+              </div>
+            </Layout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/products"
+        element={
+          <ProtectedRoute>
+            <Layout>
+              <Products />
+            </Layout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/products/:slug"
+        element={
+          <ProtectedRoute>
+            <Layout>
+              <ProductDetail />
+            </Layout>
           </ProtectedRoute>
         }
       />
