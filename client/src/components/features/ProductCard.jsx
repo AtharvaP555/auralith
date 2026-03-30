@@ -61,11 +61,11 @@ const ProductCard = ({ product }) => {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <span className="text-sm font-semibold text-gray-900">
-                ${parseFloat(product.price).toFixed(2)}
+                ₹{parseFloat(product.price).toFixed(2)}
               </span>
               {product.comparePrice && (
                 <span className="text-xs text-gray-400 line-through">
-                  ${parseFloat(product.comparePrice).toFixed(2)}
+                  ₹{parseFloat(product.comparePrice).toFixed(2)}
                 </span>
               )}
             </div>

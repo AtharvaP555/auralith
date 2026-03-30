@@ -65,7 +65,7 @@ const CartDrawer = () => {
                       {item.name}
                     </p>
                     <p className="text-sm text-gray-500 mt-0.5">
-                      ${parseFloat(item.price).toFixed(2)}
+                      ₹{parseFloat(item.price).toFixed(2)}
                     </p>
 
                     <div className="flex items-center gap-2 mt-2">
@@ -101,7 +101,7 @@ const CartDrawer = () => {
                   </div>
 
                   <p className="text-sm font-semibold text-gray-900 shrink-0">
-                    ${(parseFloat(item.price) * item.quantity).toFixed(2)}
+                    ₹{(parseFloat(item.price) * item.quantity).toFixed(2)}
                   </p>
                 </div>
               ))}
@@ -111,7 +111,7 @@ const CartDrawer = () => {
               <div className="flex items-center justify-between mb-4">
                 <span className="text-sm text-gray-500">Subtotal</span>
                 <span className="text-base font-semibold text-gray-900">
-                  ${getTotalPrice().toFixed(2)}
+                  ₹{getTotalPrice().toFixed(2)}
                 </span>
               </div>
 
