@@ -12,6 +12,9 @@ import Profile from "./pages/Profile";
 import Home from "./pages/Home";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import Wishlist from "./pages/Wishlist";
+import { useEffect } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import api from "./api/axios";
 
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated } = useAuthStore();
@@ -23,116 +26,139 @@ const GuestRoute = ({ children }) => {
   return !isAuthenticated ? children : <Navigate to="/" replace />;
 };
 
+const TokenRefresher = () => {
+  useEffect(() => {
+    const refreshToken = localStorage.getItem("refreshToken");
+    if (!refreshToken) return;
+
+    api
+      .post("/auth/refresh", { refreshToken })
+      .then((res) => {
+        const newToken = res.data.data.accessToken;
+        localStorage.setItem("accessToken", newToken);
+      })
+      .catch(() => {
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
+      });
+  }, []);
+
+  return null;
+};
+
 const App = () => {
   return (
-    <Routes>
-      <Route
-        path="/login"
-        element={
-          <GuestRoute>
-            <Login />
-          </GuestRoute>
-        }
-      />
-      <Route
-        path="/register"
-        element={
-          <GuestRoute>
-            <Register />
-          </GuestRoute>
-        }
-      />
-      <Route
-        path="/"
-        element={
-          <ProtectedRoute>
-            <Layout>
-              <Home />
-            </Layout>
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/products"
-        element={
-          <ProtectedRoute>
-            <Layout>
-              <Products />
-            </Layout>
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/products/:slug"
-        element={
-          <ProtectedRoute>
-            <Layout>
-              <ProductDetail />
-            </Layout>
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/checkout"
-        element={
-          <ProtectedRoute>
-            <Layout>
-              <Checkout />
-            </Layout>
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/orders"
-        element={
-          <ProtectedRoute>
-            <Layout>
-              <Orders />
-            </Layout>
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/orders/:id"
-        element={
-          <ProtectedRoute>
-            <Layout>
-              <OrderDetail />
-            </Layout>
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/admin"
-        element={
-          <ProtectedRoute>
-            <Layout>
-              <AdminDashboard />
-            </Layout>
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/profile"
-        element={
-          <ProtectedRoute>
-            <Layout>
-              <Profile />
-            </Layout>
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/wishlist"
-        element={
-          <ProtectedRoute>
-            <Layout>
-              <Wishlist />
-            </Layout>
-          </ProtectedRoute>
-        }
-      />
-    </Routes>
+    <>
+      <TokenRefresher />
+      <Routes>
+        <Route
+          path="/login"
+          element={
+            <GuestRoute>
+              <Login />
+            </GuestRoute>
+          }
+        />
+        <Route
+          path="/register"
+          element={
+            <GuestRoute>
+              <Register />
+            </GuestRoute>
+          }
+        />
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <Home />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/products"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <Products />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/products/:slug"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <ProductDetail />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/checkout"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <Checkout />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/orders"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <Orders />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/orders/:id"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <OrderDetail />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <AdminDashboard />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <Profile />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/wishlist"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <Wishlist />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
+    </>
   );
 };
 
