@@ -9,6 +9,8 @@ import Checkout from "./pages/Checkout";
 import Orders from "./pages/Orders";
 import OrderDetail from "./pages/OrderDetail";
 import Profile from "./pages/Profile";
+import Home from "./pages/Home";
+import AdminDashboard from "./pages/admin/AdminDashboard";
 
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated } = useAuthStore();
@@ -44,11 +46,7 @@ const App = () => {
         element={
           <ProtectedRoute>
             <Layout>
-              <div className="flex items-center justify-center min-h-96">
-                <h1 className="text-3xl font-bold text-gray-900">
-                  Welcome to Auralith
-                </h1>
-              </div>
+              <Home />
             </Layout>
           </ProtectedRoute>
         }
@@ -99,6 +97,16 @@ const App = () => {
           <ProtectedRoute>
             <Layout>
               <OrderDetail />
+            </Layout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin"
+        element={
+          <ProtectedRoute>
+            <Layout>
+              <AdminDashboard />
             </Layout>
           </ProtectedRoute>
         }

@@ -33,15 +33,6 @@ const Navbar = () => {
             Auralith
           </Link>
 
-          <div className="hidden md:flex items-center gap-8">
-            <Link
-              to="/products"
-              className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
-            >
-              Products
-            </Link>
-          </div>
-
           <div className="flex items-center gap-3">
             {isAuthenticated ? (
               <>
