@@ -38,7 +38,9 @@ const createOrder = async (req, res) => {
       validatedItems.push({ ...product[0], quantity: item.quantity });
     }
 
-    const amountInPaise = Math.round(total * 100);
+    const { couponCode, discount = 0 } = req.body;
+    const finalTotal = Math.max(0, total - discount);
+    const amountInPaise = Math.round(finalTotal * 100);
 
     const razorpayOrder = await razorpay.orders.create({
       amount: amountInPaise,
@@ -46,11 +48,19 @@ const createOrder = async (req, res) => {
       receipt: `order_${Date.now()}`,
     });
 
+    if (couponCode) {
+      await sql`
+    UPDATE "Coupon"
+    SET "usedCount" = "usedCount" + 1
+    WHERE code = ${couponCode.toUpperCase()} AND "isActive" = true
+  `;
+    }
+
     const order = await sql`
-      INSERT INTO "Order" (id, "userId", status, total, "stripePaymentId", "shippingAddress", "createdAt", "updatedAt")
-      VALUES (gen_random_uuid(), ${userId}, 'PENDING', ${total}, ${razorpayOrder.id}, ${JSON.stringify(shippingAddress)}, NOW(), NOW())
-      RETURNING *
-    `;
+  INSERT INTO "Order" (id, "userId", status, total, "stripePaymentId", "shippingAddress", "createdAt", "updatedAt")
+  VALUES (gen_random_uuid(), ${userId}, 'PENDING', ${finalTotal}, ${razorpayOrder.id}, ${JSON.stringify(shippingAddress)}, NOW(), NOW())
+  RETURNING *
+`;
 
     const orderId = order[0].id;
 

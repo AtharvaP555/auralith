@@ -1,15 +1,38 @@
 import { Link } from "react-router-dom";
-import { ShoppingCart, Star } from "lucide-react";
-import useCartStore from "../../store/cartStore";
+import { ShoppingCart, Star, Heart } from "lucide-react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
+import useCartStore from "../../store/cartStore";
+import useWishlistStore from "../../store/wishlistStore";
+import { toggleWishlist } from "../../api/wishlist";
 
 const ProductCard = ({ product }) => {
   const { addItem } = useCartStore();
+  const { isWishlisted, setWishlisted } = useWishlistStore();
+  const queryClient = useQueryClient();
+  const wishlisted = isWishlisted(product.id);
+
+  const wishlistMutation = useMutation({
+    mutationFn: () => toggleWishlist(product.id),
+    onSuccess: (data) => {
+      setWishlisted(product.id, data.data.wishlisted);
+      queryClient.invalidateQueries(["wishlist"]);
+      toast.success(
+        data.data.wishlisted ? "Added to wishlist" : "Removed from wishlist",
+      );
+    },
+    onError: () => toast.error("Failed to update wishlist"),
+  });
 
   const handleAddToCart = (e) => {
     e.preventDefault();
     addItem(product);
     toast.success(`${product.name} added to cart`);
+  };
+
+  const handleWishlist = (e) => {
+    e.preventDefault();
+    wishlistMutation.mutate();
   };
 
   const discount = product.comparePrice
@@ -35,6 +58,17 @@ const ProductCard = ({ product }) => {
               -{discount}%
             </span>
           )}
+          <button
+            onClick={handleWishlist}
+            className="absolute top-3 right-3 p-1.5 bg-white rounded-full shadow-sm hover:scale-110 transition-transform"
+          >
+            <Heart
+              size={14}
+              className={
+                wishlisted ? "fill-red-500 text-red-500" : "text-gray-400"
+              }
+            />
+          </button>
           {product.stock === 0 && (
             <div className="absolute inset-0 bg-white/70 flex items-center justify-center">
               <span className="text-sm font-medium text-gray-500">

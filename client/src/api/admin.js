@@ -34,3 +34,18 @@ export const adminGetCategories = async () => {
   const response = await api.get("/products/categories");
   return response.data;
 };
+
+export const adminGetCoupons = async () => {
+  const response = await api.get("/coupons/admin");
+  return response.data;
+};
+
+export const adminCreateCoupon = async (data) => {
+  const response = await api.post("/coupons/admin", data);
+  return response.data;
+};
+
+export const adminDeleteCoupon = async (id) => {
+  const response = await api.delete(`/coupons/admin/${id}`);
+  return response.data;
+};

@@ -130,6 +130,24 @@ model Wishlist {
   @@unique([userId, productId])
 }
 
+model Coupon {
+  id          String   @id @default(cuid())
+  code        String   @unique
+  type        CouponType
+  value       Decimal  @db.Decimal(10, 2)
+  minOrder    Decimal? @db.Decimal(10, 2)
+  maxUses     Int?
+  usedCount   Int      @default(0)
+  expiresAt   DateTime?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+}
+
+enum CouponType {
+  PERCENTAGE
+  FIXED
+}
+
 enum Role {
   USER
   ADMIN

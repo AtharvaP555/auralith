@@ -19,3 +19,8 @@ export const fetchOrder = async (id) => {
   const response = await api.get(`/orders/${id}`);
   return response.data;
 };
+
+export const validateCoupon = async ({ code, orderTotal }) => {
+  const response = await api.post("/coupons/validate", { code, orderTotal });
+  return response.data;
+};

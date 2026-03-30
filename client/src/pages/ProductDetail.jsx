@@ -5,6 +5,7 @@ import { ShoppingCart, ArrowLeft, Star, Package } from "lucide-react";
 import { fetchProduct } from "../api/products";
 import useCartStore from "../store/cartStore";
 import toast from "react-hot-toast";
+import Reviews from "../components/features/Reviews";
 
 const ProductDetail = () => {
   const { slug } = useParams();
@@ -194,6 +195,7 @@ const ProductDetail = () => {
           </div>
         </div>
       </div>
+      <Reviews slug={slug} />
     </div>
   );
 };

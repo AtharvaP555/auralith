@@ -9,6 +9,9 @@ const authRoutes = require("./routes/auth.routes");
 const productRoutes = require("./routes/product.routes");
 const orderRoutes = require("./routes/order.routes");
 const adminRoutes = require("./routes/admin.routes");
+const reviewRoutes = require("./routes/review.routes");
+const wishlistRoutes = require("./routes/wishlist.routes");
+const couponRoutes = require("./routes/coupon.routes");
 const app = express();
 
 // Security & logging middleware
@@ -30,6 +33,9 @@ app.use(
 app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/orders", orderRoutes);
+app.use("/api/products/:slug/reviews", reviewRoutes);
+app.use("/api/wishlist", wishlistRoutes);
+app.use("/api/coupons", couponRoutes);
 app.use("/api/admin", adminRoutes);
 
 // Health check route

@@ -11,6 +11,7 @@ import OrderDetail from "./pages/OrderDetail";
 import Profile from "./pages/Profile";
 import Home from "./pages/Home";
 import AdminDashboard from "./pages/admin/AdminDashboard";
+import Wishlist from "./pages/Wishlist";
 
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated } = useAuthStore();
@@ -117,6 +118,16 @@ const App = () => {
           <ProtectedRoute>
             <Layout>
               <Profile />
+            </Layout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/wishlist"
+        element={
+          <ProtectedRoute>
+            <Layout>
+              <Wishlist />
             </Layout>
           </ProtectedRoute>
         }

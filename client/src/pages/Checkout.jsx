@@ -4,7 +4,7 @@ import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { ShoppingBag } from "lucide-react";
 import useCartStore from "../store/cartStore";
-import { createOrder, verifyPayment } from "../api/orders";
+import { createOrder, verifyPayment, validateCoupon } from "../api/orders";
 
 const Checkout = () => {
   const navigate = useNavigate();
@@ -18,6 +18,9 @@ const Checkout = () => {
     postalCode: "",
     country: "India",
   });
+
+  const [couponCode, setCouponCode] = useState("");
+  const [appliedCoupon, setAppliedCoupon] = useState(null);
 
   const { mutate: placeOrder, isPending } = useMutation({
     mutationFn: createOrder,
@@ -66,6 +69,19 @@ const Checkout = () => {
     },
   });
 
+  const { mutate: applyCoupon, isPending: isValidating } = useMutation({
+    mutationFn: validateCoupon,
+    onSuccess: (data) => {
+      setAppliedCoupon(data.data.coupon);
+      toast.success(
+        `Coupon applied — ₹${data.data.coupon.discount.toFixed(2)} off`,
+      );
+    },
+    onError: (err) => {
+      toast.error(err.response?.data?.message || "Invalid coupon");
+    },
+  });
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -80,6 +96,8 @@ const Checkout = () => {
         quantity: item.quantity,
       })),
       shippingAddress: form,
+      couponCode: appliedCoupon?.code || null,
+      discount: appliedCoupon?.discount || 0,
     });
   };
 
@@ -209,12 +227,62 @@ const Checkout = () => {
             </div>
           </div>
 
+          <div className="border-t border-gray-100 pt-4">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Coupon code
+            </label>
+            {appliedCoupon ? (
+              <div className="flex items-center justify-between bg-green-50 border border-green-200 rounded-lg px-4 py-2.5">
+                <div>
+                  <p className="text-sm font-medium text-green-800">
+                    {appliedCoupon.code}
+                  </p>
+                  <p className="text-xs text-green-600">
+                    ₹{appliedCoupon.discount.toFixed(2)} discount applied
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setAppliedCoupon(null)}
+                  className="text-xs text-green-700 underline"
+                >
+                  Remove
+                </button>
+              </div>
+            ) : (
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={couponCode}
+                  onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                  className="flex-1 px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-900"
+                  placeholder="Enter coupon code"
+                />
+                <button
+                  type="button"
+                  disabled={!couponCode || isValidating}
+                  onClick={() =>
+                    applyCoupon({
+                      code: couponCode,
+                      orderTotal: getTotalPrice(),
+                    })
+                  }
+                  className="px-4 py-2.5 border border-gray-300 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors disabled:opacity-50"
+                >
+                  {isValidating ? "..." : "Apply"}
+                </button>
+              </div>
+            )}
+          </div>
+
           <button
             type="submit"
             disabled={isPending}
             className="w-full bg-gray-900 text-white py-3 rounded-xl text-sm font-medium hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed mt-4"
           >
-            {isPending ? "Processing..." : `Pay ₹${getTotalPrice().toFixed(2)}`}
+            {isPending
+              ? "Processing..."
+              : `Pay ₹${Math.max(0, getTotalPrice() - (appliedCoupon?.discount || 0)).toFixed(2)}`}
           </button>
         </form>
 
@@ -253,13 +321,25 @@ const Checkout = () => {
                 <span>Subtotal</span>
                 <span>₹{getTotalPrice().toFixed(2)}</span>
               </div>
-              <div className="flex justify-between text-sm text-gray-500 mb-4">
+              <div className="flex justify-between text-sm text-gray-500 mb-2">
                 <span>Shipping</span>
                 <span className="text-green-600">Free</span>
               </div>
+              {appliedCoupon && (
+                <div className="flex justify-between text-sm text-green-600 mb-2">
+                  <span>Discount ({appliedCoupon.code})</span>
+                  <span>-₹{appliedCoupon.discount.toFixed(2)}</span>
+                </div>
+              )}
               <div className="flex justify-between text-base font-semibold text-gray-900">
                 <span>Total</span>
-                <span>₹{getTotalPrice().toFixed(2)}</span>
+                <span>
+                  ₹
+                  {Math.max(
+                    0,
+                    getTotalPrice() - (appliedCoupon?.discount || 0),
+                  ).toFixed(2)}
+                </span>
               </div>
             </div>
           </div>

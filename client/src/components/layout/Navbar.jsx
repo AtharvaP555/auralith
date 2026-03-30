@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import { ShoppingCart, User, LogOut, Package } from "lucide-react";
+import { ShoppingCart, User, LogOut, Package, Heart } from "lucide-react";
 import toast from "react-hot-toast";
 import useAuthStore from "../../store/authStore";
 import useCartStore from "../../store/cartStore";
@@ -47,6 +47,13 @@ const Navbar = () => {
                     </span>
                   )}
                 </button>
+
+                <Link
+                  to="/wishlist"
+                  className="p-2 text-gray-600 hover:text-gray-900 transition-colors"
+                >
+                  <Heart size={20} />
+                </Link>
 
                 {user?.role === "ADMIN" && (
                   <Link
