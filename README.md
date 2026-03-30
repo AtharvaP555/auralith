@@ -5,9 +5,9 @@ A production-quality eCommerce platform built with a modern full-stack architect
 **Live demo:** https://auralith-sandy.vercel.app
 
 > Test credentials  
-> User — register any account  
-> Admin — email: `atharvapuranik255@gmail.com` (contact for password)  
-> Test UPI ID for payments: `success@razorpay`
+> Register any account to test the user flow  
+> Test UPI ID for payments: `success@razorpay`  
+> Admin access available on request
 
 ---
 
