@@ -1,3 +1,4 @@
+import { useSearchParams } from "react-router-dom";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Search, SlidersHorizontal } from "lucide-react";
@@ -6,7 +7,8 @@ import ProductCard from "../components/features/ProductCard";
 
 const Products = () => {
   const [search, setSearch] = useState("");
-  const [category, setCategory] = useState("");
+  const [searchParams] = useSearchParams();
+  const [category, setCategory] = useState(searchParams.get("category") || "");
   const [sort, setSort] = useState("createdAt");
   const [page, setPage] = useState(1);
 
