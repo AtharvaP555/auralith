@@ -2,6 +2,7 @@ const sql = require("../utils/prisma");
 const { sendSuccess, sendError } = require("../utils/response");
 const Razorpay = require("razorpay");
 const crypto = require("crypto");
+const { sendOrderConfirmation } = require("../services/email.service");
 
 const razorpay = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID,
@@ -132,10 +133,30 @@ const verifyPayment = async (req, res) => {
 
     for (const item of orderItems) {
       await sql`
-        UPDATE "Product"
-        SET stock = stock - ${item.quantity}, "updatedAt" = NOW()
-        WHERE id = ${item.productId}
-      `;
+    UPDATE "Product"
+    SET stock = stock - ${item.quantity}, "updatedAt" = NOW()
+    WHERE id = ${item.productId}
+  `;
+    }
+
+    const userResult = await sql`
+  SELECT email, name FROM "User" WHERE id = ${order[0].userId}
+`;
+
+    if (userResult.length > 0) {
+      const shippingAddress =
+        typeof order[0].shippingAddress === "string"
+          ? JSON.parse(order[0].shippingAddress)
+          : order[0].shippingAddress;
+
+      await sendOrderConfirmation({
+        to: userResult[0].email,
+        userName: userResult[0].name,
+        orderId,
+        items: orderItems,
+        total: order[0].total,
+        shippingAddress,
+      });
     }
 
     return sendSuccess(res, { orderId }, "Payment verified successfully");
