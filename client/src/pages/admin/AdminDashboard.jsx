@@ -8,6 +8,7 @@ import {
   Trash2,
   X,
   Tag,
+  Upload,
 } from "lucide-react";
 import toast from "react-hot-toast";
 import {
@@ -21,6 +22,7 @@ import {
   adminGetCoupons,
   adminCreateCoupon,
   adminDeleteCoupon,
+  uploadProductImage,
 } from "../../api/admin";
 
 const statusColors = {
@@ -58,6 +60,8 @@ const AdminDashboard = () => {
     maxUses: "",
     expiresAt: "",
   });
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const [previewImages, setPreviewImages] = useState([]);
 
   const { data: productsData } = useQuery({
     queryKey: ["admin-products"],
@@ -167,7 +171,38 @@ const AdminDashboard = () => {
       isFeatured: product.isFeatured,
       images: product.images?.join(", ") || "",
     });
+    setPreviewImages(product.images || []);
     setShowForm(true);
+  };
+
+  const handleImageUpload = async (e) => {
+    const files = Array.from(e.target.files);
+    if (files.length === 0) return;
+
+    setUploadingImage(true);
+    try {
+      const urls = [];
+      for (const file of files) {
+        const data = await uploadProductImage(file);
+        urls.push(data.data.url);
+      }
+      const existing = form.images
+        ? form.images
+            .split(",")
+            .map((s) => s.trim())
+            .filter(Boolean)
+        : [];
+      const combined = [...existing, ...urls].join(", ");
+      setForm({ ...form, images: combined });
+      setPreviewImages((prev) => [...prev, ...urls]);
+      toast.success(
+        `${urls.length} image${urls.length > 1 ? "s" : ""} uploaded`,
+      );
+    } catch {
+      toast.error("Image upload failed");
+    } finally {
+      setUploadingImage(false);
+    }
   };
 
   const handleSubmit = (e) => {
@@ -259,6 +294,7 @@ const AdminDashboard = () => {
                 setShowForm(true);
                 setEditingProduct(null);
                 setForm(emptyForm);
+                setPreviewImages([]);
               }}
               className="flex items-center gap-2 bg-gray-900 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-700 transition-colors"
             >
@@ -779,13 +815,69 @@ const AdminDashboard = () => {
 
               <div>
                 <label className="block text-xs font-medium text-gray-700 mb-1">
-                  Image URLs (comma separated)
+                  Product images
                 </label>
+
+                {previewImages.length > 0 && (
+                  <div className="flex flex-wrap gap-2 mb-2">
+                    {previewImages.map((url, i) => (
+                      <div key={i} className="relative">
+                        <img
+                          src={url}
+                          alt=""
+                          className="w-16 h-16 object-cover rounded-lg border border-gray-200"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const updated = previewImages.filter(
+                              (_, idx) => idx !== i,
+                            );
+                            setPreviewImages(updated);
+                            setForm({ ...form, images: updated.join(", ") });
+                          }}
+                          className="absolute -top-1.5 -right-1.5 bg-red-500 text-white rounded-full w-4 h-4 flex items-center justify-center text-xs"
+                        >
+                          ×
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                <label
+                  className={`flex items-center justify-center gap-2 w-full px-3 py-3 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-gray-400 transition-colors ${uploadingImage ? "opacity-50 cursor-not-allowed" : ""}`}
+                >
+                  <Upload size={16} className="text-gray-400" />
+                  <span className="text-sm text-gray-500">
+                    {uploadingImage ? "Uploading..." : "Click to upload images"}
+                  </span>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    className="hidden"
+                    disabled={uploadingImage}
+                    onChange={handleImageUpload}
+                  />
+                </label>
+
+                <p className="text-xs text-gray-400 mt-1">
+                  Or paste image URLs below (comma separated)
+                </p>
                 <input
                   type="text"
                   value={form.images}
-                  onChange={(e) => setForm({ ...form, images: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-900"
+                  onChange={(e) => {
+                    setForm({ ...form, images: e.target.value });
+                    setPreviewImages(
+                      e.target.value
+                        .split(",")
+                        .map((s) => s.trim())
+                        .filter(Boolean),
+                    );
+                  }}
+                  className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-900"
                   placeholder="https://..."
                 />
               </div>

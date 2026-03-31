@@ -12,6 +12,7 @@ const adminRoutes = require("./routes/admin.routes");
 const reviewRoutes = require("./routes/review.routes");
 const wishlistRoutes = require("./routes/wishlist.routes");
 const couponRoutes = require("./routes/coupon.routes");
+const uploadRoutes = require("./routes/upload.routes");
 const app = express();
 
 // Security & logging middleware
@@ -36,6 +37,7 @@ app.use("/api/orders", orderRoutes);
 app.use("/api/products/:slug/reviews", reviewRoutes);
 app.use("/api/wishlist", wishlistRoutes);
 app.use("/api/coupons", couponRoutes);
+app.use("/api/upload", uploadRoutes);
 app.use("/api/admin", adminRoutes);
 
 // Health check route
