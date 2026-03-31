@@ -63,4 +63,64 @@ router.put("/orders/:id", authenticate, authorizeAdmin, async (req, res) => {
   }
 });
 
+router.get("/analytics", authenticate, authorizeAdmin, async (req, res) => {
+  try {
+    const revenueByDay = await sql`
+      SELECT
+        DATE("createdAt") as date,
+        SUM(total) as revenue,
+        COUNT(*) as orders
+      FROM "Order"
+      WHERE status NOT IN ('CANCELLED', 'REFUNDED')
+        AND "createdAt" >= NOW() - INTERVAL '30 days'
+      GROUP BY DATE("createdAt")
+      ORDER BY date ASC
+    `;
+
+    const ordersByStatus = await sql`
+      SELECT status, COUNT(*) as count
+      FROM "Order"
+      GROUP BY status
+    `;
+
+    const topProducts = await sql`
+      SELECT
+        p.name,
+        p.images[1] as image,
+        SUM(oi.quantity) as sold,
+        SUM(oi.quantity * oi.price) as revenue
+      FROM "OrderItem" oi
+      JOIN "Product" p ON oi."productId" = p.id
+      JOIN "Order" o ON oi."orderId" = o.id
+      WHERE o.status NOT IN ('CANCELLED', 'REFUNDED')
+      GROUP BY p.id, p.name, p.images
+      ORDER BY sold DESC
+      LIMIT 5
+    `;
+
+    const totals = await sql`
+      SELECT
+        COUNT(DISTINCT id) as "totalOrders",
+        COALESCE(SUM(CASE WHEN status NOT IN ('CANCELLED', 'REFUNDED') THEN total ELSE 0 END), 0) as "totalRevenue",
+        COUNT(DISTINCT CASE WHEN status NOT IN ('CANCELLED', 'REFUNDED') THEN id END) as "successfulOrders"
+      FROM "Order"
+    `;
+
+    const totalUsers = await sql`
+      SELECT COUNT(*) as count FROM "User" WHERE role = 'USER'
+    `;
+
+    return sendSuccess(res, {
+      revenueByDay,
+      ordersByStatus,
+      topProducts,
+      totals: totals[0],
+      totalUsers: parseInt(totalUsers[0].count),
+    });
+  } catch (err) {
+    console.error("ANALYTICS ERROR:", err.message);
+    return sendError(res, "Failed to fetch analytics");
+  }
+});
+
 module.exports = router;

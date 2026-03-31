@@ -9,6 +9,7 @@ import {
   X,
   Tag,
   Upload,
+  BarChart2,
 } from "lucide-react";
 import toast from "react-hot-toast";
 import {
@@ -24,6 +25,7 @@ import {
   adminDeleteCoupon,
   uploadProductImage,
 } from "../../api/admin";
+import Analytics from "./Analytics";
 
 const statusColors = {
   PENDING: "bg-yellow-50 text-yellow-700",
@@ -272,19 +274,29 @@ const AdminDashboard = () => {
           <ShoppingBag size={15} />
           Orders
         </button>
+        <button
+          onClick={() => setTab("coupons")}
+          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+            tab === "coupons"
+              ? "bg-gray-900 text-white"
+              : "bg-white border border-gray-200 text-gray-600 hover:bg-gray-50"
+          }`}
+        >
+          <Tag size={15} />
+          Coupons
+        </button>
+        <button
+          onClick={() => setTab("analytics")}
+          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+            tab === "analytics"
+              ? "bg-gray-900 text-white"
+              : "bg-white border border-gray-200 text-gray-600 hover:bg-gray-50"
+          }`}
+        >
+          <BarChart2 size={15} />
+          Analytics
+        </button>
       </div>
-
-      <button
-        onClick={() => setTab("coupons")}
-        className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-          tab === "coupons"
-            ? "bg-gray-900 text-white"
-            : "bg-white border border-gray-200 text-gray-600 hover:bg-gray-50"
-        }`}
-      >
-        <Tag size={15} />
-        Coupons
-      </button>
 
       {tab === "products" && (
         <div>
@@ -695,6 +707,8 @@ const AdminDashboard = () => {
           )}
         </div>
       )}
+
+      {tab === "analytics" && <Analytics />}
 
       {showForm && (
         <div className="fixed inset-0 bg-black/30 z-50 flex items-center justify-center p-4">
