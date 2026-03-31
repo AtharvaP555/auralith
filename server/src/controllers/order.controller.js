@@ -126,10 +126,10 @@ const verifyPayment = async (req, res) => {
     `;
 
     const orderItems = await sql`
-      SELECT oi.*, p.name FROM "OrderItem" oi
-      JOIN "Product" p ON oi."productId" = p.id
-      WHERE oi."orderId" = ${orderId}
-    `;
+  SELECT oi.*, p.name as "productName" FROM "OrderItem" oi
+  JOIN "Product" p ON oi."productId" = p.id
+  WHERE oi."orderId" = ${orderId}
+`;
 
     for (const item of orderItems) {
       await sql`
