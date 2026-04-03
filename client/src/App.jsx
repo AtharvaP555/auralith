@@ -16,6 +16,7 @@ import { useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import api from "./api/axios";
 import AddressBook from "./pages/AddressBook";
+import AuthCallback from "./pages/AuthCallback";
 
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated } = useAuthStore();
@@ -68,6 +69,7 @@ const App = () => {
             </GuestRoute>
           }
         />
+        <Route path="/auth/callback" element={<AuthCallback />} />
         <Route
           path="/"
           element={

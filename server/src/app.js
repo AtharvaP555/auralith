@@ -16,6 +16,8 @@ const uploadRoutes = require("./routes/upload.routes");
 const { generalLimiter } = require("./middleware/rateLimiter");
 const addressRoutes = require("./routes/address.routes");
 const stockAlertRoutes = require("./routes/stockAlert.routes");
+const session = require("express-session");
+const passport = require("./utils/passport");
 const app = express();
 
 // Security & logging middleware
@@ -45,6 +47,17 @@ app.use("/api/coupons", couponRoutes);
 app.use("/api/upload", uploadRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/stock-alerts", stockAlertRoutes);
+app.use(
+  session({
+    secret: process.env.JWT_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: { secure: process.env.NODE_ENV === "production", maxAge: 60000 },
+  }),
+);
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 // Health check route
 app.get("/api/health", (req, res) => {
