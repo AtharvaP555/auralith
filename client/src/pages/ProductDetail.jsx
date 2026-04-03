@@ -1,11 +1,13 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { ShoppingCart, ArrowLeft, Star, Package } from "lucide-react";
-import { fetchProduct } from "../api/products";
+import { fetchProduct, fetchRelatedProducts } from "../api/products";
 import useCartStore from "../store/cartStore";
 import toast from "react-hot-toast";
 import Reviews from "../components/features/Reviews";
+import ProductCard from "../components/features/ProductCard";
+import useRecentlyViewedStore from "../store/recentlyViewedStore";
 
 const ProductDetail = () => {
   const { slug } = useParams();
@@ -13,18 +15,40 @@ const ProductDetail = () => {
   const { addItem } = useCartStore();
   const [quantity, setQuantity] = useState(1);
   const [selectedImage, setSelectedImage] = useState(0);
-
   const { data, isLoading, isError } = useQuery({
     queryKey: ["product", slug],
     queryFn: () => fetchProduct(slug),
   });
-
+  const { data: relatedData } = useQuery({
+    queryKey: ["related", slug],
+    queryFn: () => fetchRelatedProducts(slug),
+    enabled: !!slug,
+  });
   const product = data?.data?.product;
+  const relatedProducts = relatedData?.data?.products || [];
+  const { addProduct } = useRecentlyViewedStore();
 
   const handleAddToCart = () => {
     addItem(product, quantity);
     toast.success(`${product.name} added to cart`);
   };
+
+  useEffect(() => {
+    if (product) {
+      addProduct({
+        id: product.id,
+        name: product.name,
+        slug: product.slug,
+        price: product.price,
+        comparePrice: product.comparePrice,
+        images: product.images,
+        stock: product.stock,
+        categoryName: product.categoryName,
+        avgRating: product.avgRating,
+        reviewCount: product.reviewCount,
+      });
+    }
+  }, [product?.id]);
 
   if (isLoading) {
     return (
@@ -196,6 +220,18 @@ const ProductDetail = () => {
         </div>
       </div>
       <Reviews slug={slug} />
+      {relatedProducts.length > 0 && (
+        <div className="mt-12">
+          <h2 className="text-lg font-bold text-gray-900 mb-6">
+            Related products
+          </h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {relatedProducts.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

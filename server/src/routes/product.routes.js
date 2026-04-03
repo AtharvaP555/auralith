@@ -7,6 +7,7 @@ const {
   updateProduct,
   deleteProduct,
   getCategories,
+  getRelatedProducts,
 } = require("../controllers/product.controller");
 const { authenticate, authorizeAdmin } = require("../middleware/auth");
 const { validate, schemas } = require("../middleware/validate");
@@ -14,6 +15,7 @@ const { validate, schemas } = require("../middleware/validate");
 router.get("/", getProducts);
 router.get("/categories", getCategories);
 router.get("/:slug", getProduct);
+router.get("/:slug/related", getRelatedProducts);
 router.post(
   "/",
   authenticate,

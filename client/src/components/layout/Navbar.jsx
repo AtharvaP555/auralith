@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 import useAuthStore from "../../store/authStore";
 import useCartStore from "../../store/cartStore";
 import { logoutUser } from "../../api/auth";
+import SearchBar from "../features/SearchBar";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -32,6 +33,8 @@ const Navbar = () => {
           >
             Auralith
           </Link>
+
+          <SearchBar />
 
           <div className="flex items-center gap-3">
             {isAuthenticated ? (

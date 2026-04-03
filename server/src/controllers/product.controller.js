@@ -259,6 +259,43 @@ const getCategories = async (req, res) => {
   }
 };
 
+const getRelatedProducts = async (req, res) => {
+  try {
+    const { slug } = req.params;
+
+    const product = await sql`
+      SELECT id, "categoryId" FROM "Product"
+      WHERE slug = ${slug} AND "isActive" = true
+    `;
+
+    if (product.length === 0) {
+      return sendError(res, "Product not found", 404);
+    }
+
+    const related = await sql`
+      SELECT p.id, p.name, p.slug, p.price, p."comparePrice",
+             p.images, p.stock,
+             c.name as "categoryName",
+             COALESCE(AVG(r.rating), 0) as "avgRating",
+             COUNT(DISTINCT r.id) as "reviewCount"
+      FROM "Product" p
+      LEFT JOIN "Category" c ON p."categoryId" = c.id
+      LEFT JOIN "Review" r ON p.id = r."productId"
+      WHERE p."categoryId" = ${product[0].categoryId}
+        AND p.id != ${product[0].id}
+        AND p."isActive" = true
+      GROUP BY p.id, c.name
+      ORDER BY RANDOM()
+      LIMIT 4
+    `;
+
+    return sendSuccess(res, { products: related });
+  } catch (err) {
+    console.error("GET RELATED PRODUCTS ERROR:", err.message);
+    return sendError(res, "Failed to fetch related products");
+  }
+};
+
 module.exports = {
   getProducts,
   getProduct,
@@ -266,4 +303,5 @@ module.exports = {
   updateProduct,
   deleteProduct,
   getCategories,
+  getRelatedProducts,
 };

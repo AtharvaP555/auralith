@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import { fetchProducts, fetchCategories } from "../api/products";
 import ProductCard from "../components/features/ProductCard";
+import useRecentlyViewedStore from "../store/recentlyViewedStore";
 
 const Home = () => {
   const { data: productsData } = useQuery({
@@ -17,6 +18,7 @@ const Home = () => {
 
   const products = productsData?.data?.products || [];
   const categories = categoriesData?.data?.categories || [];
+  const { products: recentlyViewed } = useRecentlyViewedStore();
 
   return (
     <div>
@@ -81,6 +83,19 @@ const Home = () => {
           ))}
         </div>
       </div>
+
+      {recentlyViewed.length > 0 && (
+        <div className="mb-12">
+          <h2 className="text-xl font-bold text-gray-900 mb-6">
+            Recently viewed
+          </h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {recentlyViewed.slice(0, 4).map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-12">
         <div className="bg-white rounded-2xl border border-gray-200 p-6 text-center">
