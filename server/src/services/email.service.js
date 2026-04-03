@@ -110,4 +110,47 @@ const sendOrderConfirmation = async ({
   }
 };
 
-module.exports = { sendOrderConfirmation };
+const sendStockAlert = async ({ to, productName, productSlug }) => {
+  const html = `
+    <!DOCTYPE html>
+    <html>
+      <head><meta charset="utf-8" /><title>Back in Stock</title></head>
+      <body style="margin: 0; padding: 0; background-color: #f9fafb; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;">
+        <div style="max-width: 600px; margin: 40px auto; background: white; border-radius: 16px; overflow: hidden; border: 1px solid #e5e7eb;">
+          <div style="background-color: #111827; padding: 32px; text-align: center;">
+            <h1 style="margin: 0; color: white; font-size: 24px; font-weight: 700;">Auralith</h1>
+            <p style="margin: 8px 0 0; color: #9ca3af; font-size: 14px;">Premium Audio</p>
+          </div>
+          <div style="padding: 32px; text-align: center;">
+            <p style="font-size: 40px; margin: 0 0 16px;">🎉</p>
+            <h2 style="margin: 0 0 12px; font-size: 20px; color: #111827;">Back in stock!</h2>
+            <p style="margin: 0 0 24px; color: #6b7280; font-size: 14px; line-height: 1.6;">
+              Good news — <strong>${productName}</strong> is back in stock. Grab it before it sells out again.
+            </p>
+            <a href="https://auralith-sandy.vercel.app/products/${productSlug}"
+               style="display: inline-block; background: #111827; color: white; text-decoration: none; padding: 12px 28px; border-radius: 10px; font-size: 14px; font-weight: 500;">
+              Shop now
+            </a>
+          </div>
+          <div style="padding: 24px 32px; border-top: 1px solid #f0f0f0; text-align: center;">
+            <p style="margin: 0; font-size: 13px; color: #9ca3af;">You received this because you requested a stock alert on Auralith.</p>
+          </div>
+        </div>
+      </body>
+    </html>
+  `;
+
+  try {
+    await resend.emails.send({
+      from: "Auralith <onboarding@resend.dev>",
+      to,
+      subject: `${productName} is back in stock!`,
+      html,
+    });
+    console.log("Stock alert email sent to:", to);
+  } catch (err) {
+    console.error("STOCK ALERT EMAIL ERROR:", err.message);
+  }
+};
+
+module.exports = { sendOrderConfirmation, sendStockAlert };

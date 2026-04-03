@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import toast from "react-hot-toast";
-import { ShoppingBag } from "lucide-react";
+import { ShoppingBag, MapPin } from "lucide-react";
 import useCartStore from "../store/cartStore";
 import { createOrder, verifyPayment, validateCoupon } from "../api/orders";
+import { fetchAddresses } from "../api/addresses";
 
 const Checkout = () => {
   const navigate = useNavigate();
@@ -21,6 +22,28 @@ const Checkout = () => {
 
   const [couponCode, setCouponCode] = useState("");
   const [appliedCoupon, setAppliedCoupon] = useState(null);
+
+  const { data: addressData } = useQuery({
+    queryKey: ["addresses"],
+    queryFn: fetchAddresses,
+  });
+
+  const savedAddresses = addressData?.data?.addresses || [];
+
+  useEffect(() => {
+    const defaultAddress = savedAddresses.find((a) => a.isDefault);
+    if (defaultAddress) {
+      setForm({
+        fullName: defaultAddress.fullName,
+        phone: defaultAddress.phone,
+        street: defaultAddress.street,
+        city: defaultAddress.city,
+        state: defaultAddress.state,
+        postalCode: defaultAddress.postalCode,
+        country: defaultAddress.country,
+      });
+    }
+  }, [savedAddresses.length]);
 
   const { mutate: placeOrder, isPending } = useMutation({
     mutationFn: createOrder,
@@ -122,6 +145,61 @@ const Checkout = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
         <form onSubmit={handleSubmit} className="space-y-5">
+          {savedAddresses.length > 0 && (
+            <div className="mb-2">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Saved addresses
+              </label>
+              <div className="space-y-2">
+                {savedAddresses.map((address) => (
+                  <button
+                    key={address.id}
+                    type="button"
+                    onClick={() =>
+                      setForm({
+                        fullName: address.fullName,
+                        phone: address.phone,
+                        street: address.street,
+                        city: address.city,
+                        state: address.state,
+                        postalCode: address.postalCode,
+                        country: address.country,
+                      })
+                    }
+                    className="w-full flex items-start gap-3 p-3 border border-gray-200 rounded-lg hover:border-gray-900 transition-colors text-left"
+                  >
+                    <MapPin
+                      size={15}
+                      className="text-gray-400 mt-0.5 shrink-0"
+                    />
+                    <div className="min-w-0">
+                      <p className="text-sm font-medium text-gray-900">
+                        {address.fullName}
+                        {address.isDefault && (
+                          <span className="ml-2 text-xs bg-gray-900 text-white px-1.5 py-0.5 rounded-full">
+                            Default
+                          </span>
+                        )}
+                      </p>
+                      <p className="text-xs text-gray-500 truncate">
+                        {address.street}, {address.city}, {address.state}
+                      </p>
+                    </div>
+                  </button>
+                ))}
+              </div>
+              <div className="relative my-4">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-gray-200" />
+                </div>
+                <div className="relative flex justify-center text-xs">
+                  <span className="bg-gray-50 px-2 text-gray-400">
+                    or enter manually
+                  </span>
+                </div>
+              </div>
+            </div>
+          )}
           <h2 className="text-base font-semibold text-gray-900">
             Shipping details
           </h2>

@@ -1,7 +1,8 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { ArrowLeft, Package } from "lucide-react";
-import { fetchOrder } from "../api/orders";
+import { fetchOrder, cancelOrder } from "../api/orders";
+import toast from "react-hot-toast";
 
 const statusColors = {
   PENDING: "bg-yellow-50 text-yellow-700",
@@ -24,6 +25,20 @@ const OrderDetail = () => {
   });
 
   const order = data?.data?.order;
+
+  const queryClient = useQueryClient();
+
+  const cancelMutation = useMutation({
+    mutationFn: () => cancelOrder(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries(["order", id]);
+      queryClient.invalidateQueries(["orders"]);
+      toast.success("Order cancelled");
+    },
+    onError: (err) => {
+      toast.error(err.response?.data?.message || "Failed to cancel order");
+    },
+  });
 
   if (isLoading) {
     return (
@@ -175,6 +190,23 @@ const OrderDetail = () => {
           <p>{address?.phone}</p>
         </div>
       </div>
+      {order.status === "PENDING" && (
+        <div className="mt-4">
+          <button
+            onClick={() => {
+              if (
+                window.confirm("Are you sure you want to cancel this order?")
+              ) {
+                cancelMutation.mutate();
+              }
+            }}
+            disabled={cancelMutation.isPending}
+            className="w-full py-2.5 border border-red-200 text-red-500 rounded-xl text-sm font-medium hover:bg-red-50 transition-colors disabled:opacity-50"
+          >
+            {cancelMutation.isPending ? "Cancelling..." : "Cancel order"}
+          </button>
+        </div>
+      )}
     </div>
   );
 };

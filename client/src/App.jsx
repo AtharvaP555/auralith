@@ -15,6 +15,7 @@ import Wishlist from "./pages/Wishlist";
 import { useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import api from "./api/axios";
+import AddressBook from "./pages/AddressBook";
 
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated } = useAuthStore();
@@ -153,6 +154,16 @@ const App = () => {
             <ProtectedRoute>
               <Layout>
                 <Wishlist />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/addresses"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <AddressBook />
               </Layout>
             </ProtectedRoute>
           }

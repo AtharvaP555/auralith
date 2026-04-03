@@ -24,3 +24,8 @@ export const validateCoupon = async ({ code, orderTotal }) => {
   const response = await api.post("/coupons/validate", { code, orderTotal });
   return response.data;
 };
+
+export const cancelOrder = async (id) => {
+  const response = await api.patch(`/orders/${id}/cancel`);
+  return response.data;
+};

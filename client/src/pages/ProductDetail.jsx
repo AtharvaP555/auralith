@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { ShoppingCart, ArrowLeft, Star, Package } from "lucide-react";
 import { fetchProduct, fetchRelatedProducts } from "../api/products";
 import useCartStore from "../store/cartStore";
@@ -8,6 +8,7 @@ import toast from "react-hot-toast";
 import Reviews from "../components/features/Reviews";
 import ProductCard from "../components/features/ProductCard";
 import useRecentlyViewedStore from "../store/recentlyViewedStore";
+import api from "../api/axios";
 
 const ProductDetail = () => {
   const { slug } = useParams();
@@ -49,6 +50,15 @@ const ProductDetail = () => {
       });
     }
   }, [product?.id]);
+
+  const alertMutation = useMutation({
+    mutationFn: () =>
+      api.post("/stock-alerts/subscribe", { productId: product.id }),
+    onSuccess: () =>
+      toast.success("We'll notify you when this is back in stock"),
+    onError: (err) =>
+      toast.error(err.response?.data?.message || "Failed to subscribe"),
+  });
 
   if (isLoading) {
     return (
@@ -186,6 +196,20 @@ const ProductDetail = () => {
               {product.stock > 0 ? `${product.stock} in stock` : "Out of stock"}
             </span>
           </div>
+
+          {product.stock === 0 && (
+            <button
+              onClick={() => alertMutation.mutate()}
+              disabled={alertMutation.isPending || alertMutation.isSuccess}
+              className="w-full mb-4 py-2.5 border border-gray-300 text-gray-700 rounded-xl text-sm font-medium hover:bg-gray-50 transition-colors disabled:opacity-50"
+            >
+              {alertMutation.isSuccess
+                ? "You will be notified"
+                : alertMutation.isPending
+                  ? "Subscribing..."
+                  : "Notify me when back in stock"}
+            </button>
+          )}
 
           <div className="flex items-center gap-3 mb-6">
             <div className="flex items-center border border-gray-300 rounded-lg">

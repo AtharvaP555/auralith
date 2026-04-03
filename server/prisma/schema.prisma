@@ -79,6 +79,7 @@ model Product {
   orderItems  OrderItem[]
   reviews     Review[]
   wishlist    Wishlist[]
+  stockAlerts StockAlert[]
 }
 
 model Order {
@@ -141,6 +142,16 @@ model Coupon {
   expiresAt   DateTime?
   isActive    Boolean  @default(true)
   createdAt   DateTime @default(now())
+}
+
+model StockAlert {
+  id        String   @id @default(cuid())
+  email     String
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([email, productId])
 }
 
 enum CouponType {

@@ -226,4 +226,52 @@ const getOrder = async (req, res) => {
   }
 };
 
-module.exports = { createOrder, verifyPayment, getOrders, getOrder };
+const cancelOrder = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.user.userId;
+
+    const order = await sql`
+      SELECT * FROM "Order" WHERE id = ${id} AND "userId" = ${userId}
+    `;
+
+    if (order.length === 0) {
+      return sendError(res, "Order not found", 404);
+    }
+
+    if (order[0].status !== "PENDING") {
+      return sendError(res, "Only pending orders can be cancelled", 400);
+    }
+
+    await sql`
+      UPDATE "Order"
+      SET status = 'CANCELLED', "updatedAt" = NOW()
+      WHERE id = ${id}
+    `;
+
+    const orderItems = await sql`
+      SELECT * FROM "OrderItem" WHERE "orderId" = ${id}
+    `;
+
+    for (const item of orderItems) {
+      await sql`
+        UPDATE "Product"
+        SET stock = stock + ${item.quantity}, "updatedAt" = NOW()
+        WHERE id = ${item.productId}
+      `;
+    }
+
+    return sendSuccess(res, {}, "Order cancelled successfully");
+  } catch (err) {
+    console.error("CANCEL ORDER ERROR:", err.message);
+    return sendError(res, "Failed to cancel order");
+  }
+};
+
+module.exports = {
+  createOrder,
+  verifyPayment,
+  getOrders,
+  getOrder,
+  cancelOrder,
+};

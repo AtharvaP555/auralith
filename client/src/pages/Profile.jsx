@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
-import { Package, User } from "lucide-react";
+import { Package, User, MapPin } from "lucide-react";
 import { getMe } from "../api/auth";
 import useAuthStore from "../store/authStore";
 
@@ -71,6 +71,18 @@ const Profile = () => {
           <div className="flex items-center gap-3">
             <Package size={18} className="text-gray-400" />
             <span className="text-sm font-medium text-gray-900">My orders</span>
+          </div>
+          <span className="text-gray-400">›</span>
+        </Link>
+        <Link
+          to="/addresses"
+          className="flex items-center justify-between px-6 py-4 hover:bg-gray-50 transition-colors"
+        >
+          <div className="flex items-center gap-3">
+            <MapPin size={18} className="text-gray-400" />
+            <span className="text-sm font-medium text-gray-900">
+              Address book
+            </span>
           </div>
           <span className="text-gray-400">›</span>
         </Link>

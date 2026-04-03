@@ -1,3 +1,5 @@
+const { triggerStockAlerts } = require("./stockAlert.controller");
+
 const sql = require("../utils/prisma");
 const { sendSuccess, sendError } = require("../utils/response");
 
@@ -204,24 +206,30 @@ const updateProduct = async (req, res) => {
       isActive,
     } = req.body;
 
+    const previous = await sql`SELECT stock FROM "Product" WHERE id = ${id}`;
+
     const result = await sql`
-      UPDATE "Product"
-      SET name = COALESCE(${name}, name),
-          description = COALESCE(${description}, description),
-          price = COALESCE(${price}, price),
-          "comparePrice" = ${comparePrice},
-          stock = COALESCE(${stock}, stock),
-          images = COALESCE(${images}, images),
-          "categoryId" = COALESCE(${categoryId}, "categoryId"),
-          "isFeatured" = COALESCE(${isFeatured}, "isFeatured"),
-          "isActive" = COALESCE(${isActive}, "isActive"),
-          "updatedAt" = NOW()
-      WHERE id = ${id}
-      RETURNING *
-    `;
+  UPDATE "Product"
+  SET name = COALESCE(${name}, name),
+      description = COALESCE(${description}, description),
+      price = COALESCE(${price}, price),
+      "comparePrice" = ${comparePrice},
+      stock = COALESCE(${stock}, stock),
+      images = COALESCE(${images}, images),
+      "categoryId" = COALESCE(${categoryId}, "categoryId"),
+      "isFeatured" = COALESCE(${isFeatured}, "isFeatured"),
+      "isActive" = COALESCE(${isActive}, "isActive"),
+      "updatedAt" = NOW()
+  WHERE id = ${id}
+  RETURNING *
+`;
 
     if (result.length === 0) {
       return sendError(res, "Product not found", 404);
+    }
+
+    if (previous.length > 0 && previous[0].stock === 0 && stock > 0) {
+      await triggerStockAlerts(id);
     }
 
     return sendSuccess(res, { product: result[0] }, "Product updated");

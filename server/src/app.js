@@ -14,6 +14,8 @@ const wishlistRoutes = require("./routes/wishlist.routes");
 const couponRoutes = require("./routes/coupon.routes");
 const uploadRoutes = require("./routes/upload.routes");
 const { generalLimiter } = require("./middleware/rateLimiter");
+const addressRoutes = require("./routes/address.routes");
+const stockAlertRoutes = require("./routes/stockAlert.routes");
 const app = express();
 
 // Security & logging middleware
@@ -38,9 +40,11 @@ app.use("/api/products", productRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/products/:slug/reviews", reviewRoutes);
 app.use("/api/wishlist", wishlistRoutes);
+app.use("/api/addresses", addressRoutes);
 app.use("/api/coupons", couponRoutes);
 app.use("/api/upload", uploadRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api/stock-alerts", stockAlertRoutes);
 
 // Health check route
 app.get("/api/health", (req, res) => {
