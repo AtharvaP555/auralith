@@ -8,9 +8,11 @@ const {
   getMe,
 } = require("../controllers/auth.controller");
 const { authenticate } = require("../middleware/auth");
+const { validate, schemas } = require("../middleware/validate");
+const { loginLimiter, registerLimiter } = require("../middleware/rateLimiter");
 
-router.post("/register", register);
-router.post("/login", login);
+router.post("/register", registerLimiter, validate(schemas.register), register);
+router.post("/login", loginLimiter, validate(schemas.login), login);
 router.post("/refresh", refresh);
 router.post("/logout", logout);
 router.get("/me", authenticate, getMe);

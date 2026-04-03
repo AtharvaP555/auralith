@@ -6,9 +6,10 @@ const {
   deleteReview,
 } = require("../controllers/review.controller");
 const { authenticate } = require("../middleware/auth");
+const { validate, schemas } = require("../middleware/validate");
 
 router.get("/", getProductReviews);
-router.post("/", authenticate, createReview);
+router.post("/", authenticate, validate(schemas.createReview), createReview);
 router.delete("/:id", authenticate, deleteReview);
 
 module.exports = router;

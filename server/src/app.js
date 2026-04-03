@@ -13,6 +13,7 @@ const reviewRoutes = require("./routes/review.routes");
 const wishlistRoutes = require("./routes/wishlist.routes");
 const couponRoutes = require("./routes/coupon.routes");
 const uploadRoutes = require("./routes/upload.routes");
+const { generalLimiter } = require("./middleware/rateLimiter");
 const app = express();
 
 // Security & logging middleware
@@ -31,6 +32,7 @@ app.use(
   }),
 );
 
+app.use("/api", generalLimiter);
 app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/orders", orderRoutes);

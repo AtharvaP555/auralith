@@ -7,8 +7,9 @@ const {
   getOrder,
 } = require("../controllers/order.controller");
 const { authenticate } = require("../middleware/auth");
+const { validate, schemas } = require("../middleware/validate");
 
-router.post("/", authenticate, createOrder);
+router.post("/", authenticate, validate(schemas.createOrder), createOrder);
 router.post("/verify-payment", authenticate, verifyPayment);
 router.get("/", authenticate, getOrders);
 router.get("/:id", authenticate, getOrder);
