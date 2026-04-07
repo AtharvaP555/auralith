@@ -28,12 +28,15 @@ import {
 import Analytics from "./Analytics";
 
 const statusColors = {
-  PENDING: "bg-yellow-50 text-yellow-700",
-  PROCESSING: "bg-blue-50 text-blue-700",
-  SHIPPED: "bg-purple-50 text-purple-700",
-  DELIVERED: "bg-green-50 text-green-700",
-  CANCELLED: "bg-red-50 text-red-700",
-  REFUNDED: "bg-gray-50 text-gray-700",
+  PENDING:
+    "bg-yellow-50 text-yellow-700 dark:bg-yellow-900/20 dark:text-yellow-400",
+  PROCESSING: "bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400",
+  SHIPPED:
+    "bg-purple-50 text-purple-700 dark:bg-purple-900/20 dark:text-purple-400",
+  DELIVERED:
+    "bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-400",
+  CANCELLED: "bg-red-50 text-red-700 dark:bg-red-900/20 dark:text-red-400",
+  REFUNDED: "bg-gray-50 text-gray-700 dark:bg-gray-800 dark:text-gray-400",
 };
 
 const emptyForm = {
@@ -69,17 +72,14 @@ const AdminDashboard = () => {
     queryKey: ["admin-products"],
     queryFn: adminGetProducts,
   });
-
   const { data: ordersData } = useQuery({
     queryKey: ["admin-orders"],
     queryFn: adminGetOrders,
   });
-
   const { data: categoriesData } = useQuery({
     queryKey: ["categories"],
     queryFn: adminGetCategories,
   });
-
   const { data: couponsData } = useQuery({
     queryKey: ["admin-coupons"],
     queryFn: adminGetCoupons,
@@ -180,7 +180,6 @@ const AdminDashboard = () => {
   const handleImageUpload = async (e) => {
     const files = Array.from(e.target.files);
     if (files.length === 0) return;
-
     setUploadingImage(true);
     try {
       const urls = [];
@@ -230,72 +229,57 @@ const AdminDashboard = () => {
     .filter((o) => o.status !== "CANCELLED" && o.status !== "REFUNDED")
     .reduce((sum, o) => sum + parseFloat(o.total), 0);
 
+  const inputClass =
+    "w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-lg text-sm text-gray-900 dark:text-white bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-900 dark:focus:ring-gray-400";
+  const labelClass =
+    "block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1";
+
   return (
     <div>
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">Admin dashboard</h1>
+      <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
+        Admin dashboard
+      </h1>
 
       <div className="grid grid-cols-3 gap-4 mb-8">
-        <div className="bg-white rounded-2xl border border-gray-200 p-5">
-          <p className="text-sm text-gray-500 mb-1">Total products</p>
-          <p className="text-2xl font-bold text-gray-900">{products.length}</p>
-        </div>
-        <div className="bg-white rounded-2xl border border-gray-200 p-5">
-          <p className="text-sm text-gray-500 mb-1">Total orders</p>
-          <p className="text-2xl font-bold text-gray-900">{orders.length}</p>
-        </div>
-        <div className="bg-white rounded-2xl border border-gray-200 p-5">
-          <p className="text-sm text-gray-500 mb-1">Total revenue</p>
-          <p className="text-2xl font-bold text-gray-900">
-            ₹{totalRevenue.toFixed(2)}
-          </p>
-        </div>
+        {[
+          { label: "Total products", value: products.length },
+          { label: "Total orders", value: orders.length },
+          { label: "Total revenue", value: `₹${totalRevenue.toFixed(2)}` },
+        ].map((stat) => (
+          <div
+            key={stat.label}
+            className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-5"
+          >
+            <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">
+              {stat.label}
+            </p>
+            <p className="text-2xl font-bold text-gray-900 dark:text-white">
+              {stat.value}
+            </p>
+          </div>
+        ))}
       </div>
 
       <div className="flex gap-2 mb-6">
-        <button
-          onClick={() => setTab("products")}
-          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-            tab === "products"
-              ? "bg-gray-900 text-white"
-              : "bg-white border border-gray-200 text-gray-600 hover:bg-gray-50"
-          }`}
-        >
-          <Package size={15} />
-          Products
-        </button>
-        <button
-          onClick={() => setTab("orders")}
-          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-            tab === "orders"
-              ? "bg-gray-900 text-white"
-              : "bg-white border border-gray-200 text-gray-600 hover:bg-gray-50"
-          }`}
-        >
-          <ShoppingBag size={15} />
-          Orders
-        </button>
-        <button
-          onClick={() => setTab("coupons")}
-          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-            tab === "coupons"
-              ? "bg-gray-900 text-white"
-              : "bg-white border border-gray-200 text-gray-600 hover:bg-gray-50"
-          }`}
-        >
-          <Tag size={15} />
-          Coupons
-        </button>
-        <button
-          onClick={() => setTab("analytics")}
-          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-            tab === "analytics"
-              ? "bg-gray-900 text-white"
-              : "bg-white border border-gray-200 text-gray-600 hover:bg-gray-50"
-          }`}
-        >
-          <BarChart2 size={15} />
-          Analytics
-        </button>
+        {[
+          { key: "products", icon: Package, label: "Products" },
+          { key: "orders", icon: ShoppingBag, label: "Orders" },
+          { key: "coupons", icon: Tag, label: "Coupons" },
+          { key: "analytics", icon: BarChart2, label: "Analytics" },
+        ].map(({ key, icon: Icon, label }) => (
+          <button
+            key={key}
+            onClick={() => setTab(key)}
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+              tab === key
+                ? "bg-gray-900 dark:bg-white text-white dark:text-gray-900"
+                : "bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800"
+            }`}
+          >
+            <Icon size={15} />
+            {label}
+          </button>
+        ))}
       </div>
 
       {tab === "products" && (
@@ -308,40 +292,38 @@ const AdminDashboard = () => {
                 setForm(emptyForm);
                 setPreviewImages([]);
               }}
-              className="flex items-center gap-2 bg-gray-900 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-700 transition-colors"
+              className="flex items-center gap-2 bg-gray-900 dark:bg-white text-white dark:text-gray-900 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-700 dark:hover:bg-gray-100 transition-colors"
             >
               <Plus size={15} />
               Add product
             </button>
           </div>
 
-          <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+          <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 overflow-hidden">
             <table className="w-full text-sm">
-              <thead className="bg-gray-50 border-b border-gray-200">
+              <thead className="bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
                 <tr>
-                  <th className="text-left px-5 py-3 font-medium text-gray-500">
-                    Product
-                  </th>
-                  <th className="text-left px-5 py-3 font-medium text-gray-500">
-                    Category
-                  </th>
-                  <th className="text-left px-5 py-3 font-medium text-gray-500">
-                    Price
-                  </th>
-                  <th className="text-left px-5 py-3 font-medium text-gray-500">
-                    Stock
-                  </th>
-                  <th className="text-right px-5 py-3 font-medium text-gray-500">
-                    Actions
-                  </th>
+                  {["Product", "Category", "Price", "Stock", "Actions"].map(
+                    (h, i) => (
+                      <th
+                        key={h}
+                        className={`${i === 4 ? "text-right" : "text-left"} px-5 py-3 font-medium text-gray-500 dark:text-gray-400`}
+                      >
+                        {h}
+                      </th>
+                    ),
+                  )}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100">
+              <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
                 {products.map((product) => (
-                  <tr key={product.id} className="hover:bg-gray-50">
+                  <tr
+                    key={product.id}
+                    className="hover:bg-gray-50 dark:hover:bg-gray-800"
+                  >
                     <td className="px-5 py-3">
                       <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-lg overflow-hidden bg-gray-100 shrink-0">
+                        <div className="w-9 h-9 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-800 shrink-0">
                           <img
                             src={
                               product.images?.[0] ||
@@ -351,15 +333,15 @@ const AdminDashboard = () => {
                             className="w-full h-full object-cover"
                           />
                         </div>
-                        <span className="font-medium text-gray-900 truncate max-w-40">
+                        <span className="font-medium text-gray-900 dark:text-white truncate max-w-40">
                           {product.name}
                         </span>
                       </div>
                     </td>
-                    <td className="px-5 py-3 text-gray-500">
+                    <td className="px-5 py-3 text-gray-500 dark:text-gray-400">
                       {product.categoryName}
                     </td>
-                    <td className="px-5 py-3 text-gray-900">
+                    <td className="px-5 py-3 text-gray-900 dark:text-white">
                       ₹{parseFloat(product.price).toFixed(2)}
                     </td>
                     <td className="px-5 py-3">
@@ -373,7 +355,7 @@ const AdminDashboard = () => {
                       <div className="flex items-center justify-end gap-2">
                         <button
                           onClick={() => handleEdit(product)}
-                          className="p-1.5 text-gray-400 hover:text-gray-900 transition-colors"
+                          className="p-1.5 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
                         >
                           <Pencil size={14} />
                         </button>
@@ -394,40 +376,38 @@ const AdminDashboard = () => {
       )}
 
       {tab === "orders" && (
-        <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+        <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 overflow-hidden">
           <table className="w-full text-sm">
-            <thead className="bg-gray-50 border-b border-gray-200">
+            <thead className="bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
               <tr>
-                <th className="text-left px-5 py-3 font-medium text-gray-500">
-                  Order
-                </th>
-                <th className="text-left px-5 py-3 font-medium text-gray-500">
-                  Customer
-                </th>
-                <th className="text-left px-5 py-3 font-medium text-gray-500">
-                  Total
-                </th>
-                <th className="text-left px-5 py-3 font-medium text-gray-500">
-                  Status
-                </th>
-                <th className="text-left px-5 py-3 font-medium text-gray-500">
-                  Date
-                </th>
+                {["Order", "Customer", "Total", "Status", "Date"].map((h) => (
+                  <th
+                    key={h}
+                    className="text-left px-5 py-3 font-medium text-gray-500 dark:text-gray-400"
+                  >
+                    {h}
+                  </th>
+                ))}
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100">
+            <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
               {orders.map((order) => (
-                <tr key={order.id} className="hover:bg-gray-50">
-                  <td className="px-5 py-3 font-medium text-gray-900">
+                <tr
+                  key={order.id}
+                  className="hover:bg-gray-50 dark:hover:bg-gray-800"
+                >
+                  <td className="px-5 py-3 font-medium text-gray-900 dark:text-white">
                     #{order.id.slice(0, 8).toUpperCase()}
                   </td>
                   <td className="px-5 py-3">
-                    <p className="font-medium text-gray-900">
+                    <p className="font-medium text-gray-900 dark:text-white">
                       {order.userName}
                     </p>
-                    <p className="text-xs text-gray-400">{order.userEmail}</p>
+                    <p className="text-xs text-gray-400 dark:text-gray-500">
+                      {order.userEmail}
+                    </p>
                   </td>
-                  <td className="px-5 py-3 text-gray-900">
+                  <td className="px-5 py-3 text-gray-900 dark:text-white">
                     ₹{parseFloat(order.total).toFixed(2)}
                   </td>
                   <td className="px-5 py-3">
@@ -455,7 +435,7 @@ const AdminDashboard = () => {
                       ))}
                     </select>
                   </td>
-                  <td className="px-5 py-3 text-gray-500">
+                  <td className="px-5 py-3 text-gray-500 dark:text-gray-400">
                     {new Date(order.createdAt).toLocaleDateString("en-IN", {
                       day: "numeric",
                       month: "short",
@@ -474,64 +454,55 @@ const AdminDashboard = () => {
           <div className="flex justify-end mb-4">
             <button
               onClick={() => setShowCouponForm(true)}
-              className="flex items-center gap-2 bg-gray-900 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-700 transition-colors"
+              className="flex items-center gap-2 bg-gray-900 dark:bg-white text-white dark:text-gray-900 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-700 dark:hover:bg-gray-100 transition-colors"
             >
               <Plus size={15} />
               Add coupon
             </button>
           </div>
 
-          <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+          <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 overflow-hidden">
             <table className="w-full text-sm">
-              <thead className="bg-gray-50 border-b border-gray-200">
+              <thead className="bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
                 <tr>
-                  <th className="text-left px-5 py-3 font-medium text-gray-500">
-                    Code
-                  </th>
-                  <th className="text-left px-5 py-3 font-medium text-gray-500">
-                    Type
-                  </th>
-                  <th className="text-left px-5 py-3 font-medium text-gray-500">
-                    Value
-                  </th>
-                  <th className="text-left px-5 py-3 font-medium text-gray-500">
-                    Uses
-                  </th>
-                  <th className="text-left px-5 py-3 font-medium text-gray-500">
-                    Expires
-                  </th>
-                  <th className="text-right px-5 py-3 font-medium text-gray-500">
-                    Actions
-                  </th>
+                  {["Code", "Type", "Value", "Uses", "Expires", "Actions"].map(
+                    (h, i) => (
+                      <th
+                        key={h}
+                        className={`${i === 5 ? "text-right" : "text-left"} px-5 py-3 font-medium text-gray-500 dark:text-gray-400`}
+                      >
+                        {h}
+                      </th>
+                    ),
+                  )}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100">
+              <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
                 {coupons.map((coupon) => (
-                  <tr key={coupon.id} className="hover:bg-gray-50">
-                    <td className="px-5 py-3 font-medium text-gray-900">
+                  <tr
+                    key={coupon.id}
+                    className="hover:bg-gray-50 dark:hover:bg-gray-800"
+                  >
+                    <td className="px-5 py-3 font-medium text-gray-900 dark:text-white">
                       {coupon.code}
                     </td>
-                    <td className="px-5 py-3 text-gray-500">
+                    <td className="px-5 py-3 text-gray-500 dark:text-gray-400">
                       {coupon.type === "PERCENTAGE" ? "Percentage" : "Fixed"}
                     </td>
-                    <td className="px-5 py-3 text-gray-900">
+                    <td className="px-5 py-3 text-gray-900 dark:text-white">
                       {coupon.type === "PERCENTAGE"
                         ? `${parseFloat(coupon.value)}%`
                         : `₹${parseFloat(coupon.value).toFixed(2)}`}
                     </td>
-                    <td className="px-5 py-3 text-gray-500">
+                    <td className="px-5 py-3 text-gray-500 dark:text-gray-400">
                       {coupon.usedCount}
                       {coupon.maxUses ? ` / ${coupon.maxUses}` : " / ∞"}
                     </td>
-                    <td className="px-5 py-3 text-gray-500">
+                    <td className="px-5 py-3 text-gray-500 dark:text-gray-400">
                       {coupon.expiresAt
                         ? new Date(coupon.expiresAt).toLocaleDateString(
                             "en-IN",
-                            {
-                              day: "numeric",
-                              month: "short",
-                              year: "numeric",
-                            },
+                            { day: "numeric", month: "short", year: "numeric" },
                           )
                         : "Never"}
                     </td>
@@ -549,7 +520,7 @@ const AdminDashboard = () => {
                   <tr>
                     <td
                       colSpan={6}
-                      className="px-5 py-8 text-center text-gray-400 text-sm"
+                      className="px-5 py-8 text-center text-gray-400 dark:text-gray-500 text-sm"
                     >
                       No coupons yet
                     </td>
@@ -561,19 +532,18 @@ const AdminDashboard = () => {
 
           {showCouponForm && (
             <div className="fixed inset-0 bg-black/30 z-50 flex items-center justify-center p-4">
-              <div className="bg-white rounded-2xl w-full max-w-md p-6">
+              <div className="bg-white dark:bg-gray-900 rounded-2xl w-full max-w-md p-6">
                 <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-base font-semibold text-gray-900">
+                  <h2 className="text-base font-semibold text-gray-900 dark:text-white">
                     Add coupon
                   </h2>
                   <button
                     onClick={() => setShowCouponForm(false)}
-                    className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors"
+                    className="p-1.5 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
                   >
-                    <X size={16} />
+                    <X size={16} className="text-gray-500 dark:text-gray-400" />
                   </button>
                 </div>
-
                 <form
                   onSubmit={(e) => {
                     e.preventDefault();
@@ -582,9 +552,7 @@ const AdminDashboard = () => {
                   className="space-y-4"
                 >
                   <div>
-                    <label className="block text-xs font-medium text-gray-700 mb-1">
-                      Code
-                    </label>
+                    <label className={labelClass}>Code</label>
                     <input
                       type="text"
                       required
@@ -595,29 +563,26 @@ const AdminDashboard = () => {
                           code: e.target.value.toUpperCase(),
                         })
                       }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-900"
+                      className={inputClass}
                       placeholder="SAVE20"
                     />
                   </div>
-
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="block text-xs font-medium text-gray-700 mb-1">
-                        Type
-                      </label>
+                      <label className={labelClass}>Type</label>
                       <select
                         value={couponForm.type}
                         onChange={(e) =>
                           setCouponForm({ ...couponForm, type: e.target.value })
                         }
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-900 bg-white"
+                        className={inputClass}
                       >
                         <option value="PERCENTAGE">Percentage</option>
                         <option value="FIXED">Fixed amount</option>
                       </select>
                     </div>
                     <div>
-                      <label className="block text-xs font-medium text-gray-700 mb-1">
+                      <label className={labelClass}>
                         Value ({couponForm.type === "PERCENTAGE" ? "%" : "₹"})
                       </label>
                       <input
@@ -631,17 +596,14 @@ const AdminDashboard = () => {
                             value: e.target.value,
                           })
                         }
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-900"
+                        className={inputClass}
                         placeholder="20"
                       />
                     </div>
                   </div>
-
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="block text-xs font-medium text-gray-700 mb-1">
-                        Min order (₹)
-                      </label>
+                      <label className={labelClass}>Min order (₹)</label>
                       <input
                         type="number"
                         step="0.01"
@@ -652,14 +614,12 @@ const AdminDashboard = () => {
                             minOrder: e.target.value,
                           })
                         }
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-900"
+                        className={inputClass}
                         placeholder="Optional"
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-medium text-gray-700 mb-1">
-                        Max uses
-                      </label>
+                      <label className={labelClass}>Max uses</label>
                       <input
                         type="number"
                         value={couponForm.maxUses}
@@ -669,16 +629,13 @@ const AdminDashboard = () => {
                             maxUses: e.target.value,
                           })
                         }
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-900"
+                        className={inputClass}
                         placeholder="Optional"
                       />
                     </div>
                   </div>
-
                   <div>
-                    <label className="block text-xs font-medium text-gray-700 mb-1">
-                      Expiry date
-                    </label>
+                    <label className={labelClass}>Expiry date</label>
                     <input
                       type="date"
                       value={couponForm.expiresAt}
@@ -688,14 +645,13 @@ const AdminDashboard = () => {
                           expiresAt: e.target.value,
                         })
                       }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-900"
+                      className={inputClass}
                     />
                   </div>
-
                   <button
                     type="submit"
                     disabled={createCouponMutation.isPending}
-                    className="w-full bg-gray-900 text-white py-2.5 rounded-lg text-sm font-medium hover:bg-gray-700 transition-colors disabled:opacity-50"
+                    className="w-full bg-gray-900 dark:bg-white text-white dark:text-gray-900 py-2.5 rounded-lg text-sm font-medium hover:bg-gray-700 dark:hover:bg-gray-100 transition-colors disabled:opacity-50"
                   >
                     {createCouponMutation.isPending
                       ? "Creating..."
@@ -712,9 +668,9 @@ const AdminDashboard = () => {
 
       {showForm && (
         <div className="fixed inset-0 bg-black/30 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl w-full max-w-lg max-h-screen overflow-y-auto p-6">
+          <div className="bg-white dark:bg-gray-900 rounded-2xl w-full max-w-lg max-h-screen overflow-y-auto p-6">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-base font-semibold text-gray-900">
+              <h2 className="text-base font-semibold text-gray-900 dark:text-white">
                 {editingProduct ? "Edit product" : "Add product"}
               </h2>
               <button
@@ -723,30 +679,25 @@ const AdminDashboard = () => {
                   setEditingProduct(null);
                   setForm(emptyForm);
                 }}
-                className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors"
+                className="p-1.5 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
               >
-                <X size={16} />
+                <X size={16} className="text-gray-500 dark:text-gray-400" />
               </button>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-xs font-medium text-gray-700 mb-1">
-                  Name
-                </label>
+                <label className={labelClass}>Name</label>
                 <input
                   type="text"
                   required
                   value={form.name}
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-900"
+                  className={inputClass}
                 />
               </div>
-
               <div>
-                <label className="block text-xs font-medium text-gray-700 mb-1">
-                  Description
-                </label>
+                <label className={labelClass}>Description</label>
                 <textarea
                   required
                   rows={3}
@@ -754,15 +705,12 @@ const AdminDashboard = () => {
                   onChange={(e) =>
                     setForm({ ...form, description: e.target.value })
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-900 resize-none"
+                  className={`${inputClass} resize-none`}
                 />
               </div>
-
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">
-                    Price (₹)
-                  </label>
+                  <label className={labelClass}>Price (₹)</label>
                   <input
                     type="number"
                     required
@@ -771,13 +719,11 @@ const AdminDashboard = () => {
                     onChange={(e) =>
                       setForm({ ...form, price: e.target.value })
                     }
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-900"
+                    className={inputClass}
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">
-                    Compare price (₹)
-                  </label>
+                  <label className={labelClass}>Compare price (₹)</label>
                   <input
                     type="number"
                     step="0.01"
@@ -785,16 +731,13 @@ const AdminDashboard = () => {
                     onChange={(e) =>
                       setForm({ ...form, comparePrice: e.target.value })
                     }
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-900"
+                    className={inputClass}
                   />
                 </div>
               </div>
-
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">
-                    Stock
-                  </label>
+                  <label className={labelClass}>Stock</label>
                   <input
                     type="number"
                     required
@@ -802,20 +745,18 @@ const AdminDashboard = () => {
                     onChange={(e) =>
                       setForm({ ...form, stock: e.target.value })
                     }
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-900"
+                    className={inputClass}
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">
-                    Category
-                  </label>
+                  <label className={labelClass}>Category</label>
                   <select
                     required
                     value={form.categoryId}
                     onChange={(e) =>
                       setForm({ ...form, categoryId: e.target.value })
                     }
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-900 bg-white"
+                    className={inputClass}
                   >
                     <option value="">Select category</option>
                     {categories.map((cat) => (
@@ -828,10 +769,7 @@ const AdminDashboard = () => {
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-gray-700 mb-1">
-                  Product images
-                </label>
-
+                <label className={labelClass}>Product images</label>
                 {previewImages.length > 0 && (
                   <div className="flex flex-wrap gap-2 mb-2">
                     {previewImages.map((url, i) => (
@@ -839,7 +777,7 @@ const AdminDashboard = () => {
                         <img
                           src={url}
                           alt=""
-                          className="w-16 h-16 object-cover rounded-lg border border-gray-200"
+                          className="w-16 h-16 object-cover rounded-lg border border-gray-200 dark:border-gray-700"
                         />
                         <button
                           type="button"
@@ -858,12 +796,14 @@ const AdminDashboard = () => {
                     ))}
                   </div>
                 )}
-
                 <label
-                  className={`flex items-center justify-center gap-2 w-full px-3 py-3 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-gray-400 transition-colors ${uploadingImage ? "opacity-50 cursor-not-allowed" : ""}`}
+                  className={`flex items-center justify-center gap-2 w-full px-3 py-3 border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-lg cursor-pointer hover:border-gray-400 dark:hover:border-gray-500 transition-colors ${uploadingImage ? "opacity-50 cursor-not-allowed" : ""}`}
                 >
-                  <Upload size={16} className="text-gray-400" />
-                  <span className="text-sm text-gray-500">
+                  <Upload
+                    size={16}
+                    className="text-gray-400 dark:text-gray-500"
+                  />
+                  <span className="text-sm text-gray-500 dark:text-gray-400">
                     {uploadingImage ? "Uploading..." : "Click to upload images"}
                   </span>
                   <input
@@ -875,8 +815,7 @@ const AdminDashboard = () => {
                     onChange={handleImageUpload}
                   />
                 </label>
-
-                <p className="text-xs text-gray-400 mt-1">
+                <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
                   Or paste image URLs below (comma separated)
                 </p>
                 <input
@@ -891,7 +830,7 @@ const AdminDashboard = () => {
                         .filter(Boolean),
                     );
                   }}
-                  className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-900"
+                  className={`${inputClass} mt-1`}
                   placeholder="https://..."
                 />
               </div>
@@ -906,7 +845,10 @@ const AdminDashboard = () => {
                   }
                   className="rounded"
                 />
-                <label htmlFor="isFeatured" className="text-sm text-gray-700">
+                <label
+                  htmlFor="isFeatured"
+                  className="text-sm text-gray-700 dark:text-gray-300"
+                >
                   Featured product
                 </label>
               </div>
@@ -914,7 +856,7 @@ const AdminDashboard = () => {
               <button
                 type="submit"
                 disabled={createMutation.isPending || updateMutation.isPending}
-                className="w-full bg-gray-900 text-white py-2.5 rounded-lg text-sm font-medium hover:bg-gray-700 transition-colors disabled:opacity-50"
+                className="w-full bg-gray-900 dark:bg-white text-white dark:text-gray-900 py-2.5 rounded-lg text-sm font-medium hover:bg-gray-700 dark:hover:bg-gray-100 transition-colors disabled:opacity-50"
               >
                 {createMutation.isPending || updateMutation.isPending
                   ? "Saving..."

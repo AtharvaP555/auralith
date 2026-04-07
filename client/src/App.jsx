@@ -17,6 +17,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import api from "./api/axios";
 import AddressBook from "./pages/AddressBook";
 import AuthCallback from "./pages/AuthCallback";
+import useThemeStore from "./store/themeStore";
 
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated } = useAuthStore();
@@ -43,6 +44,11 @@ const TokenRefresher = () => {
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
       });
+  }, []);
+
+  const { initTheme } = useThemeStore();
+  useEffect(() => {
+    initTheme();
   }, []);
 
   return null;

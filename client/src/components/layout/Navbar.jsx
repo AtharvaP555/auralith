@@ -1,15 +1,25 @@
 import { Link, useNavigate } from "react-router-dom";
-import { ShoppingCart, User, LogOut, Package, Heart } from "lucide-react";
+import {
+  ShoppingCart,
+  User,
+  LogOut,
+  Package,
+  Heart,
+  Sun,
+  Moon,
+} from "lucide-react";
 import toast from "react-hot-toast";
 import useAuthStore from "../../store/authStore";
 import useCartStore from "../../store/cartStore";
 import { logoutUser } from "../../api/auth";
 import SearchBar from "../features/SearchBar";
+import useThemeStore from "../../store/themeStore";
 
 const Navbar = () => {
   const navigate = useNavigate();
   const { user, isAuthenticated, logout } = useAuthStore();
   const { getTotalItems, toggleCart } = useCartStore();
+  const { isDark, toggleTheme } = useThemeStore();
 
   const handleLogout = async () => {
     try {
@@ -24,12 +34,12 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-white border-b border-gray-200 sticky top-0 z-40">
+    <nav className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 sticky top-0 z-40">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <Link
             to="/"
-            className="text-xl font-bold text-gray-900 tracking-tight"
+            className="text-xl font-bold text-gray-900 dark:text-white tracking-tight"
           >
             Auralith
           </Link>
@@ -40,8 +50,15 @@ const Navbar = () => {
             {isAuthenticated ? (
               <>
                 <button
+                  onClick={toggleTheme}
+                  className="p-2 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100 transition-colors"
+                >
+                  {isDark ? <Sun size={20} /> : <Moon size={20} />}
+                </button>
+
+                <button
                   onClick={toggleCart}
-                  className="relative p-2 text-gray-600 hover:text-gray-900 transition-colors"
+                  className="relative p-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
                 >
                   <ShoppingCart size={20} />
                   {getTotalItems() > 0 && (
@@ -53,7 +70,7 @@ const Navbar = () => {
 
                 <Link
                   to="/wishlist"
-                  className="p-2 text-gray-600 hover:text-gray-900 transition-colors"
+                  className="p-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
                 >
                   <Heart size={20} />
                 </Link>
@@ -61,7 +78,7 @@ const Navbar = () => {
                 {user?.role === "ADMIN" && (
                   <Link
                     to="/admin"
-                    className="p-2 text-gray-600 hover:text-gray-900 transition-colors"
+                    className="p-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
                   >
                     <Package size={20} />
                   </Link>
@@ -69,14 +86,14 @@ const Navbar = () => {
 
                 <Link
                   to="/profile"
-                  className="p-2 text-gray-600 hover:text-gray-900 transition-colors"
+                  className="p-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
                 >
                   <User size={20} />
                 </Link>
 
                 <button
                   onClick={handleLogout}
-                  className="p-2 text-gray-600 hover:text-gray-900 transition-colors"
+                  className="p-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
                 >
                   <LogOut size={20} />
                 </button>
@@ -85,13 +102,13 @@ const Navbar = () => {
               <div className="flex items-center gap-3">
                 <Link
                   to="/login"
-                  className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
+                  className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
                 >
                   Sign in
                 </Link>
                 <Link
                   to="/register"
-                  className="text-sm bg-gray-900 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors"
+                  className="text-sm bg-gray-900 dark:bg-white text-white dark:text-gray-900 px-4 py-2 rounded-lg hover:bg-gray-700 dark:hover:bg-gray-100 transition-colors"
                 >
                   Sign up
                 </Link>

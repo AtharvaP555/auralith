@@ -29,13 +29,15 @@ const Products = () => {
   return (
     <div>
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900 mb-6">Products</h1>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
+          Products
+        </h1>
 
         <div className="flex flex-col sm:flex-row gap-3">
           <div className="relative flex-1">
             <Search
               size={16}
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500"
             />
             <input
               type="text"
@@ -45,7 +47,7 @@ const Products = () => {
                 setSearch(e.target.value);
                 setPage(1);
               }}
-              className="w-full pl-9 pr-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-900"
+              className="w-full pl-9 pr-4 py-2.5 border border-gray-300 dark:border-gray-700 rounded-lg text-sm text-gray-900 dark:text-white bg-white dark:bg-gray-900 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-900 dark:focus:ring-gray-400"
             />
           </div>
 
@@ -55,7 +57,7 @@ const Products = () => {
               setCategory(e.target.value);
               setPage(1);
             }}
-            className="px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-900 bg-white"
+            className="px-4 py-2.5 border border-gray-300 dark:border-gray-700 rounded-lg text-sm text-gray-900 dark:text-white bg-white dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-900 dark:focus:ring-gray-400"
           >
             <option value="">All categories</option>
             {categories.map((cat) => (
@@ -68,7 +70,7 @@ const Products = () => {
           <select
             value={sort}
             onChange={(e) => setSort(e.target.value)}
-            className="px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-900 bg-white"
+            className="px-4 py-2.5 border border-gray-300 dark:border-gray-700 rounded-lg text-sm text-gray-900 dark:text-white bg-white dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-900 dark:focus:ring-gray-400"
           >
             <option value="createdAt">Newest</option>
             <option value="price">Price</option>
@@ -82,21 +84,24 @@ const Products = () => {
           {[...Array(8)].map((_, i) => (
             <div
               key={i}
-              className="bg-white rounded-2xl border border-gray-200 overflow-hidden animate-pulse"
+              className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 overflow-hidden animate-pulse"
             >
-              <div className="aspect-square bg-gray-100" />
+              <div className="aspect-square bg-gray-100 dark:bg-gray-800" />
               <div className="p-4 space-y-2">
-                <div className="h-3 bg-gray-100 rounded w-1/3" />
-                <div className="h-4 bg-gray-100 rounded w-2/3" />
-                <div className="h-3 bg-gray-100 rounded w-1/4" />
+                <div className="h-3 bg-gray-100 dark:bg-gray-800 rounded w-1/3" />
+                <div className="h-4 bg-gray-100 dark:bg-gray-800 rounded w-2/3" />
+                <div className="h-3 bg-gray-100 dark:bg-gray-800 rounded w-1/4" />
               </div>
             </div>
           ))}
         </div>
       ) : products.length === 0 ? (
         <div className="text-center py-20">
-          <SlidersHorizontal size={40} className="mx-auto text-gray-300 mb-3" />
-          <p className="text-gray-500">No products found</p>
+          <SlidersHorizontal
+            size={40}
+            className="mx-auto text-gray-300 dark:text-gray-600 mb-3"
+          />
+          <p className="text-gray-500 dark:text-gray-400">No products found</p>
         </div>
       ) : (
         <>
@@ -111,11 +116,11 @@ const Products = () => {
               <button
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
                 disabled={page === 1}
-                className="px-4 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-4 py-2 text-sm border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Previous
               </button>
-              <span className="text-sm text-gray-500">
+              <span className="text-sm text-gray-500 dark:text-gray-400">
                 Page {page} of {pagination.totalPages}
               </span>
               <button
@@ -123,7 +128,7 @@ const Products = () => {
                   setPage((p) => Math.min(pagination.totalPages, p + 1))
                 }
                 disabled={page === pagination.totalPages}
-                className="px-4 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-4 py-2 text-sm border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Next
               </button>

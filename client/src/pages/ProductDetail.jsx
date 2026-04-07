@@ -63,14 +63,14 @@ const ProductDetail = () => {
   if (isLoading) {
     return (
       <div className="animate-pulse">
-        <div className="h-6 w-32 bg-gray-100 rounded mb-8" />
+        <div className="h-6 w-32 bg-gray-100 dark:bg-gray-800 rounded mb-8" />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-          <div className="aspect-square bg-gray-100 rounded-2xl" />
+          <div className="aspect-square bg-gray-100 dark:bg-gray-800 rounded-2xl" />
           <div className="space-y-4">
-            <div className="h-8 bg-gray-100 rounded w-3/4" />
-            <div className="h-4 bg-gray-100 rounded w-1/4" />
-            <div className="h-20 bg-gray-100 rounded" />
-            <div className="h-10 bg-gray-100 rounded w-1/3" />
+            <div className="h-8 bg-gray-100 dark:bg-gray-800 rounded w-3/4" />
+            <div className="h-4 bg-gray-100 dark:bg-gray-800 rounded w-1/4" />
+            <div className="h-20 bg-gray-100 dark:bg-gray-800 rounded" />
+            <div className="h-10 bg-gray-100 dark:bg-gray-800 rounded w-1/3" />
           </div>
         </div>
       </div>
@@ -80,10 +80,12 @@ const ProductDetail = () => {
   if (isError || !product) {
     return (
       <div className="text-center py-20">
-        <p className="text-gray-500 mb-4">Product not found</p>
+        <p className="text-gray-500 dark:text-gray-400 mb-4">
+          Product not found
+        </p>
         <button
           onClick={() => navigate("/products")}
-          className="text-sm text-gray-900 underline"
+          className="text-sm text-gray-900 dark:text-white underline"
         >
           Back to products
         </button>
@@ -101,7 +103,7 @@ const ProductDetail = () => {
     <div>
       <button
         onClick={() => navigate("/products")}
-        className="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-900 transition-colors mb-8"
+        className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors mb-8"
       >
         <ArrowLeft size={16} />
         Back to products
@@ -109,7 +111,7 @@ const ProductDetail = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
         <div>
-          <div className="aspect-square rounded-2xl overflow-hidden bg-gray-50 mb-3">
+          <div className="aspect-square rounded-2xl overflow-hidden bg-gray-50 dark:bg-gray-800 mb-3">
             <img
               src={
                 product.images?.[selectedImage] ||
@@ -127,7 +129,7 @@ const ProductDetail = () => {
                   onClick={() => setSelectedImage(i)}
                   className={`w-16 h-16 rounded-lg overflow-hidden border-2 transition-colors ${
                     selectedImage === i
-                      ? "border-gray-900"
+                      ? "border-gray-900 dark:border-white"
                       : "border-transparent"
                   }`}
                 >
@@ -143,8 +145,10 @@ const ProductDetail = () => {
         </div>
 
         <div>
-          <p className="text-sm text-gray-400 mb-2">{product.categoryName}</p>
-          <h1 className="text-2xl font-bold text-gray-900 mb-3">
+          <p className="text-sm text-gray-400 dark:text-gray-500 mb-2">
+            {product.categoryName}
+          </p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">
             {product.name}
           </h1>
 
@@ -157,34 +161,34 @@ const ProductDetail = () => {
                   className={
                     i < Math.round(product.avgRating)
                       ? "fill-amber-400 text-amber-400"
-                      : "text-gray-200 fill-gray-200"
+                      : "text-gray-200 dark:text-gray-700 fill-gray-200 dark:fill-gray-700"
                   }
                 />
               ))}
             </div>
-            <span className="text-sm text-gray-500">
+            <span className="text-sm text-gray-500 dark:text-gray-400">
               {parseFloat(product.avgRating).toFixed(1)} ({product.reviewCount}{" "}
               reviews)
             </span>
           </div>
 
           <div className="flex items-center gap-3 mb-6">
-            <span className="text-2xl font-bold text-gray-900">
+            <span className="text-2xl font-bold text-gray-900 dark:text-white">
               ₹{parseFloat(product.price).toFixed(2)}
             </span>
             {product.comparePrice && (
-              <span className="text-lg text-gray-400 line-through">
+              <span className="text-lg text-gray-400 dark:text-gray-500 line-through">
                 ₹{parseFloat(product.comparePrice).toFixed(2)}
               </span>
             )}
             {discount && (
-              <span className="bg-gray-900 text-white text-xs font-medium px-2 py-1 rounded-full">
+              <span className="bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-xs font-medium px-2 py-1 rounded-full">
                 -{discount}%
               </span>
             )}
           </div>
 
-          <p className="text-gray-600 text-sm leading-relaxed mb-6">
+          <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed mb-6">
             {product.description}
           </p>
 
@@ -201,7 +205,7 @@ const ProductDetail = () => {
             <button
               onClick={() => alertMutation.mutate()}
               disabled={alertMutation.isPending || alertMutation.isSuccess}
-              className="w-full mb-4 py-2.5 border border-gray-300 text-gray-700 rounded-xl text-sm font-medium hover:bg-gray-50 transition-colors disabled:opacity-50"
+              className="w-full mb-4 py-2.5 border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 rounded-xl text-sm font-medium hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors disabled:opacity-50"
             >
               {alertMutation.isSuccess
                 ? "You will be notified"
@@ -212,21 +216,21 @@ const ProductDetail = () => {
           )}
 
           <div className="flex items-center gap-3 mb-6">
-            <div className="flex items-center border border-gray-300 rounded-lg">
+            <div className="flex items-center border border-gray-300 dark:border-gray-700 rounded-lg">
               <button
                 onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                className="px-3 py-2 text-gray-600 hover:text-gray-900 transition-colors"
+                className="px-3 py-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
               >
                 -
               </button>
-              <span className="px-4 py-2 text-sm font-medium border-x border-gray-300">
+              <span className="px-4 py-2 text-sm font-medium text-gray-900 dark:text-white border-x border-gray-300 dark:border-gray-700">
                 {quantity}
               </span>
               <button
                 onClick={() =>
                   setQuantity((q) => Math.min(product.stock, q + 1))
                 }
-                className="px-3 py-2 text-gray-600 hover:text-gray-900 transition-colors"
+                className="px-3 py-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
               >
                 +
               </button>
@@ -235,7 +239,7 @@ const ProductDetail = () => {
             <button
               onClick={handleAddToCart}
               disabled={product.stock === 0}
-              className="flex-1 flex items-center justify-center gap-2 bg-gray-900 text-white py-2.5 rounded-lg text-sm font-medium hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 flex items-center justify-center gap-2 bg-gray-900 dark:bg-white text-white dark:text-gray-900 py-2.5 rounded-lg text-sm font-medium hover:bg-gray-700 dark:hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <ShoppingCart size={16} />
               Add to cart
@@ -246,7 +250,7 @@ const ProductDetail = () => {
       <Reviews slug={slug} />
       {relatedProducts.length > 0 && (
         <div className="mt-12">
-          <h2 className="text-lg font-bold text-gray-900 mb-6">
+          <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-6">
             Related products
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">

@@ -24,7 +24,7 @@ const StarInput = ({ value, onChange }) => {
             className={
               star <= (hovered || value)
                 ? "fill-amber-400 text-amber-400"
-                : "text-gray-200 fill-gray-200"
+                : "text-gray-200 dark:text-gray-700 fill-gray-200 dark:fill-gray-700"
             }
           />
         </button>
@@ -87,15 +87,17 @@ const Reviews = ({ slug }) => {
 
   return (
     <div className="mt-12">
-      <h2 className="text-lg font-bold text-gray-900 mb-6">
+      <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-6">
         Reviews {total > 0 && `(${total})`}
       </h2>
 
       {total > 0 && (
-        <div className="bg-white rounded-2xl border border-gray-200 p-6 mb-6">
+        <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-6 mb-6">
           <div className="flex items-center gap-8">
             <div className="text-center">
-              <p className="text-4xl font-bold text-gray-900">{average}</p>
+              <p className="text-4xl font-bold text-gray-900 dark:text-white">
+                {average}
+              </p>
               <div className="flex items-center justify-center gap-0.5 my-1">
                 {[1, 2, 3, 4, 5].map((s) => (
                   <Star
@@ -104,12 +106,14 @@ const Reviews = ({ slug }) => {
                     className={
                       s <= Math.round(parseFloat(average))
                         ? "fill-amber-400 text-amber-400"
-                        : "fill-gray-200 text-gray-200"
+                        : "fill-gray-200 dark:fill-gray-700 text-gray-200 dark:text-gray-700"
                     }
                   />
                 ))}
               </div>
-              <p className="text-xs text-gray-400">{total} reviews</p>
+              <p className="text-xs text-gray-400 dark:text-gray-500">
+                {total} reviews
+              </p>
             </div>
 
             <div className="flex-1 space-y-1.5">
@@ -120,14 +124,18 @@ const Reviews = ({ slug }) => {
                 const pct = total > 0 ? (count / total) * 100 : 0;
                 return (
                   <div key={star} className="flex items-center gap-2">
-                    <span className="text-xs text-gray-500 w-3">{star}</span>
-                    <div className="flex-1 bg-gray-100 rounded-full h-1.5">
+                    <span className="text-xs text-gray-500 dark:text-gray-400 w-3">
+                      {star}
+                    </span>
+                    <div className="flex-1 bg-gray-100 dark:bg-gray-800 rounded-full h-1.5">
                       <div
                         className="bg-amber-400 h-1.5 rounded-full transition-all"
                         style={{ width: `${pct}%` }}
                       />
                     </div>
-                    <span className="text-xs text-gray-400 w-4">{count}</span>
+                    <span className="text-xs text-gray-400 dark:text-gray-500 w-4">
+                      {count}
+                    </span>
                   </div>
                 );
               })}
@@ -137,33 +145,33 @@ const Reviews = ({ slug }) => {
       )}
 
       {isAuthenticated && (
-        <div className="bg-white rounded-2xl border border-gray-200 p-6 mb-6">
-          <h3 className="text-sm font-semibold text-gray-900 mb-4">
+        <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-6 mb-6">
+          <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-4">
             Write a review
           </h3>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-xs font-medium text-gray-700 mb-2">
+              <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Your rating
               </label>
               <StarInput value={rating} onChange={setRating} />
             </div>
             <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1">
+              <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Comment (optional)
               </label>
               <textarea
                 rows={3}
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-900 resize-none"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-lg text-sm text-gray-900 dark:text-white bg-white dark:bg-gray-800 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-900 dark:focus:ring-gray-400 resize-none"
                 placeholder="Share your experience with this product..."
               />
             </div>
             <button
               type="submit"
               disabled={submitMutation.isPending}
-              className="bg-gray-900 text-white px-5 py-2 rounded-lg text-sm font-medium hover:bg-gray-700 transition-colors disabled:opacity-50"
+              className="bg-gray-900 dark:bg-white text-white dark:text-gray-900 px-5 py-2 rounded-lg text-sm font-medium hover:bg-gray-700 dark:hover:bg-gray-100 transition-colors disabled:opacity-50"
             >
               {submitMutation.isPending ? "Submitting..." : "Submit review"}
             </button>
@@ -176,15 +184,15 @@ const Reviews = ({ slug }) => {
           {[...Array(2)].map((_, i) => (
             <div
               key={i}
-              className="bg-white rounded-2xl border border-gray-200 p-5 animate-pulse"
+              className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-5 animate-pulse"
             >
-              <div className="h-3 bg-gray-100 rounded w-1/4 mb-2" />
-              <div className="h-4 bg-gray-100 rounded w-3/4" />
+              <div className="h-3 bg-gray-100 dark:bg-gray-800 rounded w-1/4 mb-2" />
+              <div className="h-4 bg-gray-100 dark:bg-gray-800 rounded w-3/4" />
             </div>
           ))}
         </div>
       ) : reviews.length === 0 ? (
-        <div className="text-center py-10 text-gray-400 text-sm">
+        <div className="text-center py-10 text-gray-400 dark:text-gray-500 text-sm">
           No reviews yet. Be the first to review this product.
         </div>
       ) : (
@@ -192,17 +200,17 @@ const Reviews = ({ slug }) => {
           {reviews.map((review) => (
             <div
               key={review.id}
-              className="bg-white rounded-2xl border border-gray-200 p-5"
+              className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-5"
             >
               <div className="flex items-start justify-between mb-2">
                 <div>
                   <div className="flex items-center gap-2 mb-1">
-                    <div className="w-7 h-7 rounded-full bg-gray-900 flex items-center justify-center">
-                      <span className="text-white text-xs font-medium">
+                    <div className="w-7 h-7 rounded-full bg-gray-900 dark:bg-white flex items-center justify-center">
+                      <span className="text-white dark:text-gray-900 text-xs font-medium">
                         {review.userName?.charAt(0).toUpperCase()}
                       </span>
                     </div>
-                    <span className="text-sm font-medium text-gray-900">
+                    <span className="text-sm font-medium text-gray-900 dark:text-white">
                       {review.userName}
                     </span>
                   </div>
@@ -214,14 +222,14 @@ const Reviews = ({ slug }) => {
                         className={
                           s <= review.rating
                             ? "fill-amber-400 text-amber-400"
-                            : "fill-gray-200 text-gray-200"
+                            : "fill-gray-200 dark:fill-gray-700 text-gray-200 dark:text-gray-700"
                         }
                       />
                     ))}
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-xs text-gray-400">
+                  <span className="text-xs text-gray-400 dark:text-gray-500">
                     {new Date(review.createdAt).toLocaleDateString("en-IN", {
                       day: "numeric",
                       month: "short",
@@ -241,7 +249,7 @@ const Reviews = ({ slug }) => {
                 </div>
               </div>
               {review.comment && (
-                <p className="text-sm text-gray-600 mt-2 leading-relaxed">
+                <p className="text-sm text-gray-600 dark:text-gray-400 mt-2 leading-relaxed">
                   {review.comment}
                 </p>
               )}

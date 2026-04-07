@@ -37,7 +37,7 @@ const Home = () => {
         </p>
         <Link
           to="/products"
-          className="inline-flex items-center gap-2 bg-white text-gray-900 px-6 py-3 rounded-xl text-sm font-medium hover:bg-gray-100 transition-colors"
+          className="inline-flex items-center gap-2 bg-white dark:bg-gray-100 text-gray-900 px-6 py-3 rounded-xl text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-200 transition-colors"
         >
           Shop now
           <ArrowRight size={16} />
@@ -46,19 +46,21 @@ const Home = () => {
 
       <div className="mb-12">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-bold text-gray-900">Shop by category</h2>
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+            Shop by category
+          </h2>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {categories.map((cat) => (
             <Link
               key={cat.id}
               to={`/products?category=${cat.slug}`}
-              className="bg-white rounded-2xl border border-gray-200 p-5 hover:shadow-md transition-all text-center group"
+              className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-5 hover:shadow-md transition-all text-center group"
             >
-              <p className="text-sm font-semibold text-gray-900 group-hover:text-gray-600 transition-colors">
+              <p className="text-sm font-semibold text-gray-900 dark:text-white group-hover:text-gray-600 dark:group-hover:text-gray-300 transition-colors">
                 {cat.name}
               </p>
-              <p className="text-xs text-gray-400 mt-1">
+              <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
                 {cat.productCount} products
               </p>
             </Link>
@@ -68,10 +70,12 @@ const Home = () => {
 
       <div className="mb-12">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-bold text-gray-900">Latest products</h2>
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+            Latest products
+          </h2>
           <Link
             to="/products"
-            className="text-sm text-gray-500 hover:text-gray-900 transition-colors flex items-center gap-1"
+            className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors flex items-center gap-1"
           >
             View all
             <ArrowRight size={14} />
@@ -86,7 +90,7 @@ const Home = () => {
 
       {recentlyViewed.length > 0 && (
         <div className="mb-12">
-          <h2 className="text-xl font-bold text-gray-900 mb-6">
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6">
             Recently viewed
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -98,19 +102,29 @@ const Home = () => {
       )}
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-12">
-        <div className="bg-white rounded-2xl border border-gray-200 p-6 text-center">
-          <p className="text-2xl font-bold text-gray-900 mb-1">Free shipping</p>
-          <p className="text-sm text-gray-500">On all orders</p>
+        <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-6 text-center">
+          <p className="text-2xl font-bold text-gray-900 dark:text-white mb-1">
+            Free shipping
+          </p>
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            On all orders
+          </p>
         </div>
-        <div className="bg-white rounded-2xl border border-gray-200 p-6 text-center">
-          <p className="text-2xl font-bold text-gray-900 mb-1">
+        <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-6 text-center">
+          <p className="text-2xl font-bold text-gray-900 dark:text-white mb-1">
             2 year warranty
           </p>
-          <p className="text-sm text-gray-500">On all products</p>
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            On all products
+          </p>
         </div>
-        <div className="bg-white rounded-2xl border border-gray-200 p-6 text-center">
-          <p className="text-2xl font-bold text-gray-900 mb-1">24/7 support</p>
-          <p className="text-sm text-gray-500">Always here to help</p>
+        <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-6 text-center">
+          <p className="text-2xl font-bold text-gray-900 dark:text-white mb-1">
+            24/7 support
+          </p>
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            Always here to help
+          </p>
         </div>
       </div>
     </div>
