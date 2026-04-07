@@ -13,7 +13,6 @@ import Home from "./pages/Home";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import Wishlist from "./pages/Wishlist";
 import { useEffect } from "react";
-import { useQueryClient } from "@tanstack/react-query";
 import api from "./api/axios";
 import AddressBook from "./pages/AddressBook";
 import AuthCallback from "./pages/AuthCallback";

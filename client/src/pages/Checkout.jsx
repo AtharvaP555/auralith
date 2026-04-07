@@ -43,7 +43,7 @@ const Checkout = () => {
         country: defaultAddress.country,
       });
     }
-  }, [savedAddresses.length]);
+  }, [savedAddresses]);
 
   const { mutate: placeOrder, isPending } = useMutation({
     mutationFn: createOrder,

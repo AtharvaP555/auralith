@@ -109,13 +109,16 @@ const Analytics = () => {
       </h2>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-        {stats.map(({ icon: Icon, label, value }) => (
+        {stats.map(({ icon: IconComponent, label, value }) => (
           <div
             key={label}
             className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-5"
           >
             <div className="flex items-center gap-2 mb-2">
-              <Icon size={16} className="text-gray-400 dark:text-gray-500" />
+              <IconComponent
+                size={16}
+                className="text-gray-400 dark:text-gray-500"
+              />
               <p className="text-xs text-gray-500 dark:text-gray-400">
                 {label}
               </p>

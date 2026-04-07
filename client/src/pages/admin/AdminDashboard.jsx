@@ -266,7 +266,7 @@ const AdminDashboard = () => {
           { key: "orders", icon: ShoppingBag, label: "Orders" },
           { key: "coupons", icon: Tag, label: "Coupons" },
           { key: "analytics", icon: BarChart2, label: "Analytics" },
-        ].map(({ key, icon: Icon, label }) => (
+        ].map(({ key, icon: IconComponent, label }) => (
           <button
             key={key}
             onClick={() => setTab(key)}
@@ -276,7 +276,7 @@ const AdminDashboard = () => {
                 : "bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800"
             }`}
           >
-            <Icon size={15} />
+            <IconComponent size={15} />
             {label}
           </button>
         ))}

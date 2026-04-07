@@ -31,7 +31,7 @@ const AuthCallback = () => {
       toast.error("Something went wrong. Please try again.");
       navigate("/login");
     }
-  }, []);
+  }, [navigate, searchParams, setAuth]);
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center">

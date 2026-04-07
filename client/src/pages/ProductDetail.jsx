@@ -49,7 +49,7 @@ const ProductDetail = () => {
         reviewCount: product.reviewCount,
       });
     }
-  }, [product?.id]);
+  }, [product?.id, addProduct]);
 
   const alertMutation = useMutation({
     mutationFn: () =>
