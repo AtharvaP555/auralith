@@ -85,18 +85,18 @@ const Analytics = () => {
 
   const stats = [
     {
-      icon: TrendingUp,
+      Icon: TrendingUp,
       label: "Total revenue",
       value: `₹${parseFloat(totals.totalRevenue || 0).toFixed(0)}`,
     },
     {
-      icon: ShoppingBag,
+      Icon: ShoppingBag,
       label: "Total orders",
       value: totals.totalOrders || 0,
     },
-    { icon: Users, label: "Total users", value: analytics?.totalUsers || 0 },
+    { Icon: Users, label: "Total users", value: analytics?.totalUsers || 0 },
     {
-      icon: Package,
+      Icon: Package,
       label: "Successful orders",
       value: totals.successfulOrders || 0,
     },
@@ -110,16 +110,13 @@ const Analytics = () => {
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
         // eslint-disable-next-line
-        {stats.map(({ icon: IconComponent, label, value }) => (
+        {stats.map(({ Icon, label, value }) => (
           <div
             key={label}
             className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-5"
           >
             <div className="flex items-center gap-2 mb-2">
-              <IconComponent
-                size={16}
-                className="text-gray-400 dark:text-gray-500"
-              />
+              <Icon size={16} className="text-gray-400 dark:text-gray-500" />
               <p className="text-xs text-gray-500 dark:text-gray-400">
                 {label}
               </p>
