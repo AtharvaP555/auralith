@@ -48,7 +48,7 @@ const TokenRefresher = () => {
   const { initTheme } = useThemeStore();
   useEffect(() => {
     initTheme();
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return null;
 };

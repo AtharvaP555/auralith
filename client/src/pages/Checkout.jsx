@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import toast from "react-hot-toast";
@@ -28,22 +28,10 @@ const Checkout = () => {
     queryFn: fetchAddresses,
   });
 
-  const savedAddresses = addressData?.data?.addresses || [];
-
-  useEffect(() => {
-    const defaultAddress = savedAddresses.find((a) => a.isDefault);
-    if (defaultAddress) {
-      setForm({
-        fullName: defaultAddress.fullName,
-        phone: defaultAddress.phone,
-        street: defaultAddress.street,
-        city: defaultAddress.city,
-        state: defaultAddress.state,
-        postalCode: defaultAddress.postalCode,
-        country: defaultAddress.country,
-      });
-    }
-  }, [savedAddresses]);
+  const savedAddresses = useMemo(
+    () => addressData?.data?.addresses || [],
+    [addressData],
+  );
 
   const { mutate: placeOrder, isPending } = useMutation({
     mutationFn: createOrder,

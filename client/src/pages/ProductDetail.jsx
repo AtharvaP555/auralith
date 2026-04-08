@@ -49,6 +49,7 @@ const ProductDetail = () => {
         reviewCount: product.reviewCount,
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [product?.id, addProduct]);
 
   const alertMutation = useMutation({

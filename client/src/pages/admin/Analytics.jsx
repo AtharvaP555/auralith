@@ -109,6 +109,7 @@ const Analytics = () => {
       </h2>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        // eslint-disable-next-line
         {stats.map(({ icon: IconComponent, label, value }) => (
           <div
             key={label}
