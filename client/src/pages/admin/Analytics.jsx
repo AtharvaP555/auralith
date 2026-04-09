@@ -83,25 +83,6 @@ const Analytics = () => {
   };
   const areaColor = isDark ? "#ffffff" : "#111827";
 
-  const stats = [
-    {
-      Icon: TrendingUp,
-      label: "Total revenue",
-      value: `₹${parseFloat(totals.totalRevenue || 0).toFixed(0)}`,
-    },
-    {
-      Icon: ShoppingBag,
-      label: "Total orders",
-      value: totals.totalOrders || 0,
-    },
-    { Icon: Users, label: "Total users", value: analytics?.totalUsers || 0 },
-    {
-      Icon: Package,
-      label: "Successful orders",
-      value: totals.successfulOrders || 0,
-    },
-  ];
-
   return (
     <div>
       <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-6">
@@ -109,23 +90,56 @@ const Analytics = () => {
       </h2>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-        // eslint-disable-next-line
-        {stats.map(({ Icon, label, value }) => (
-          <div
-            key={label}
-            className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-5"
-          >
-            <div className="flex items-center gap-2 mb-2">
-              <Icon size={16} className="text-gray-400 dark:text-gray-500" />
-              <p className="text-xs text-gray-500 dark:text-gray-400">
-                {label}
-              </p>
-            </div>
-            <p className="text-2xl font-bold text-gray-900 dark:text-white">
-              {value}
+        <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-5">
+          <div className="flex items-center gap-2 mb-2">
+            <TrendingUp
+              size={16}
+              className="text-gray-400 dark:text-gray-500"
+            />
+            <p className="text-xs text-gray-500 dark:text-gray-400">
+              Total revenue
             </p>
           </div>
-        ))}
+          <p className="text-2xl font-bold text-gray-900 dark:text-white">
+            ₹{parseFloat(totals.totalRevenue || 0).toFixed(0)}
+          </p>
+        </div>
+        <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-5">
+          <div className="flex items-center gap-2 mb-2">
+            <ShoppingBag
+              size={16}
+              className="text-gray-400 dark:text-gray-500"
+            />
+            <p className="text-xs text-gray-500 dark:text-gray-400">
+              Total orders
+            </p>
+          </div>
+          <p className="text-2xl font-bold text-gray-900 dark:text-white">
+            {totals.totalOrders || 0}
+          </p>
+        </div>
+        <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-5">
+          <div className="flex items-center gap-2 mb-2">
+            <Users size={16} className="text-gray-400 dark:text-gray-500" />
+            <p className="text-xs text-gray-500 dark:text-gray-400">
+              Total users
+            </p>
+          </div>
+          <p className="text-2xl font-bold text-gray-900 dark:text-white">
+            {analytics?.totalUsers || 0}
+          </p>
+        </div>
+        <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-5">
+          <div className="flex items-center gap-2 mb-2">
+            <Package size={16} className="text-gray-400 dark:text-gray-500" />
+            <p className="text-xs text-gray-500 dark:text-gray-400">
+              Successful orders
+            </p>
+          </div>
+          <p className="text-2xl font-bold text-gray-900 dark:text-white">
+            {totals.successfulOrders || 0}
+          </p>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
