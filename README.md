@@ -1,4 +1,4 @@
-[![CI](https://github.com/AtharvaP455/auralith/actions/workflows/ci.yml/badge.svg)](https://github.com/AtharvaP455/auralith/actions/workflows/ci.yml)
+[![CI](https://github.com/AtharvaP455/auralith/actions/workflows/ci.yml/badge.svg)](https://github.com/AtharvaP555/auralith/actions/workflows/ci.yml)
 
 # Auralith — Full-Stack eCommerce Platform
 
