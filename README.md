@@ -1,3 +1,5 @@
+[![CI](https://github.com/AtharvaP455/auralith/actions/workflows/ci.yml/badge.svg)](https://github.com/AtharvaP455/auralith/actions/workflows/ci.yml)
+
 # Auralith — Full-Stack eCommerce Platform
 
 A production-quality eCommerce platform built with a modern full-stack architecture. Browse products, manage a cart, place orders with real payment processing, and manage everything through an admin dashboard.
